@@ -1,0 +1,47 @@
+body {
+  font-family:Arial, Helvetica, sans-serif;
+}
+.map {
+  border-collapse: collapse;
+}
+.map .cell {
+  width: 30px;
+  height: 30px;
+  font-size: 6px;
+  text-align: center;
+  cursor: pointer;
+}
+.map .cell:hover {
+  outline: 1px solid black;
+}
+.map .cell-residential {
+  background-color: green;
+}
+.map .cell-industrial {
+  background-color: yellow;
+}
+.map .cell-commercial {
+  background-color: blue;
+}
+.map .cell-empty {
+  background-color: greenyellow;
+}
+.map .cell-city-hall {
+  background-color: red;
+}
+.map .cell-arterial {
+  background-color: gray;
+}
+.map .cell-parking {
+  background-color: black;
+  color: white;
+}
+.tile-bank {
+  margin-bottom: 20px;
+}
+.tile-bank .tile-bank-entry {
+  cursor: pointer;
+}
+.tile-bank .tile-bank-entry:hover {
+  outline: 1px solid black;
+}

@@ -1,0 +1,33 @@
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/index.ts":
+/*!**********************!*\
+  !*** ./src/index.ts ***!
+  \**********************/
+/***/ (() => {
+
+eval("\nfunction getInitialState() {\n    const map = [\n        { type: 'city-hall', row: -1, column: 0 },\n        { type: 'city-hall', row: -1, column: 1 },\n        { type: 'parking', row: 0, column: 0 },\n        { type: 'city-hall', row: 0, column: 1 },\n    ];\n    for (let row = -100; row <= 100; row++) {\n        map.push({ type: 'arterial', row, column: -1 });\n    }\n    return {\n        map,\n        tiles: new Map([\n            ['residential', 4],\n            ['commercial', 4],\n            ['industrial', 4],\n        ]),\n        log: ['Welcome!'],\n    };\n}\nfunction getGrid(state, { rowStart, rowEnd, colStart, colEnd }) {\n    const result = [];\n    for (let row = rowStart; row <= rowEnd; row++) {\n        const rowCells = [];\n        for (let column = colStart; column <= colEnd; column++) {\n            rowCells.push(getCell(row, column, state));\n        }\n        result.push(rowCells);\n    }\n    return result;\n}\nfunction getCell(row, column, { map }) {\n    const match = map.find((cell) => cell.row === row && cell.column === column);\n    return match !== null && match !== void 0 ? match : { type: 'empty', row, column };\n}\nfunction initializeUi(container, onMapTileClick, onTileBankClick) {\n    const grid = document.createElement('table');\n    grid.setAttribute('cellpadding', '0');\n    grid.classList.add('map');\n    container.appendChild(grid);\n    grid.addEventListener('click', (e) => {\n        var _a, _b;\n        const target = e.target;\n        if (!target.classList.contains('cell')) {\n            return;\n        }\n        onMapTileClick(parseInt((_a = target.dataset.row) !== null && _a !== void 0 ? _a : '', 10), parseInt((_b = target.dataset.column) !== null && _b !== void 0 ? _b : '', 10));\n    });\n    const tiles = document.createElement('ul');\n    tiles.classList.add('tile-bank');\n    tiles.addEventListener('click', (e) => {\n        const target = e.target;\n        if (!target.classList.contains('tile-bank-entry')) {\n            return;\n        }\n        onTileBankClick(target.dataset.type);\n    });\n    container.appendChild(tiles);\n    const log = document.createElement('ul');\n    container.appendChild(log);\n    return { grid, tiles, log };\n}\nfunction render(state, grid, tiles, log) {\n    while (grid.firstChild) {\n        grid.removeChild(grid.firstChild);\n    }\n    const rows = getGrid(state, { rowStart: -8, rowEnd: 8, colStart: -15, colEnd: 15 });\n    for (const row of rows) {\n        const tr = document.createElement('tr');\n        for (const cell of row) {\n            const td = document.createElement('td');\n            td.classList.add(`cell`);\n            td.classList.add(`cell-${cell.type}`);\n            td.dataset.row = `${cell.row}`;\n            td.dataset.column = `${cell.column}`;\n            td.innerText = cell.type;\n            tr.appendChild(td);\n        }\n        grid.appendChild(tr);\n    }\n    while (tiles.firstChild) {\n        tiles.removeChild(tiles.firstChild);\n    }\n    for (const [type, count] of state.tiles.entries()) {\n        const selected = state.paintTile === type;\n        const li = document.createElement('li');\n        li.classList.add('tile-bank-entry');\n        li.innerText = `${selected ? '* ' : ''}${type}: ${count}`;\n        li.dataset.type = type;\n        tiles.appendChild(li);\n    }\n    while (log.firstChild) {\n        log.removeChild(log.firstChild);\n    }\n    for (const entry of state.log) {\n        const li = document.createElement('li');\n        li.innerText = entry;\n        log.appendChild(li);\n    }\n}\nlet currentState = getInitialState();\nconst { grid, tiles, log } = initializeUi(document.getElementById('container'), (row, column) => {\n    var _a;\n    const cell = getCell(row, column, currentState);\n    if (!currentState.paintTile) {\n        return;\n    }\n    if (cell.type !== 'empty') {\n        currentState = Object.assign(Object.assign({}, currentState), { log: ['Cell is occupied', ...currentState.log] });\n        render(currentState, grid, tiles, log);\n        return;\n    }\n    const tileCount = (_a = currentState.tiles.get(currentState.paintTile)) !== null && _a !== void 0 ? _a : 0;\n    const newTiles = new Map([...currentState.tiles]);\n    const newMap = [...currentState.map];\n    let paintTile = currentState.paintTile;\n    const newLog = [...currentState.log];\n    if (tileCount <= 0) {\n        newTiles.delete(paintTile);\n    }\n    else {\n        const newTileCount = tileCount - 1;\n        if (newTileCount <= 0) {\n            newTiles.delete(paintTile);\n            paintTile = undefined;\n        }\n        else {\n            newTiles.set(paintTile, newTileCount);\n        }\n        newMap.push({ type: currentState.paintTile, row, column });\n        newLog.splice(0, 0, `Placed a ${currentState.paintTile} tile`);\n    }\n    currentState = Object.assign(Object.assign({}, currentState), { map: newMap, tiles: newTiles, paintTile, log: newLog });\n    render(currentState, grid, tiles, log);\n}, (type) => {\n    currentState = Object.assign(Object.assign({}, currentState), { paintTile: type });\n    render(currentState, grid, tiles, log);\n});\nrender(currentState, grid, tiles, log);\n\n\n//# sourceURL=webpack:///./src/index.ts?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./src/index.ts"]();
+/******/ 	
+/******/ })()
+;
