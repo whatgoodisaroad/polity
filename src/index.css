@@ -14,10 +14,16 @@ body {
 .map .cell:hover {
   outline: 1px solid black;
 }
+.map .cell-freeway-cooridor {
+  background-color: gray;
+}
+.map .cell-service-road {
+  background-color: lightskyblue;
+}
 .map .cell-residential {
   background-color: green;
 }
-.map .cell-industrial {
+.map .cell-factory {
   background-color: yellow;
 }
 .map .cell-commercial {
@@ -31,10 +37,6 @@ body {
 }
 .map .cell-arterial {
   background-color: gray;
-}
-.map .cell-parking {
-  background-color: black;
-  color: white;
 }
 .tile-bank {
   margin-bottom: 20px;
