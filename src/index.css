@@ -5,11 +5,30 @@ body {
   border-collapse: collapse;
 }
 .map .cell {
-  width: 30px;
-  height: 30px;
   font-size: 6px;
   text-align: center;
   cursor: pointer;
+  overflow: hidden;
+}
+.map.zoom-level-4 .cell {
+  width: 128px;
+  height: 128px;
+}
+.map.zoom-level-8 .cell {
+  width: 64px;
+  height: 64px;
+}
+.map.zoom-level-16 .cell {
+  width: 32px;
+  height: 32px;
+}
+.map.zoom-level-32 .cell {
+  width: 16px;
+  height: 16px;
+}
+.map.zoom-level-64 .cell {
+  width: 8px;
+  height: 8px;
 }
 .map .cell:hover {
   outline: 1px solid black;
