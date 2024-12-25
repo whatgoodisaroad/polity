@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "build": "npx webpack build",
-    "serve": "npx http-server -o ./src/index.htm"
+    "build": "npx webpack build && cp -r ./public/* ./build",
+    "serve": "npx light-server -s build -p 8080"
   },
   "devDependencies": {
     "@types/react-dom": "^19.0.2",
@@ -10,7 +10,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "http-server": "^14.1.1",
+    "light-server": "^2.9.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }
