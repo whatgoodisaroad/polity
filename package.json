@@ -4,11 +4,14 @@
     "serve": "npx http-server -o ./src/index.htm"
   },
   "devDependencies": {
+    "@types/react-dom": "^19.0.2",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.2",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }
