@@ -1,18 +1,5 @@
-export type CellType =
-  | 'empty'
-  | 'city-hall'
-  | 'residential'
-  | 'industrial'
-  | 'commercial'
-  | 'freeway-cooridor'
-  | 'commercial-corridor'
-  | 'service-road';
+import { CellType, CityHallCell, EmptyCell, FreewayCorridorCell, MapCell } from "./cell";
 
-export type MapCell = {
-  type: CellType;
-  row: number;
-  column: number;
-};
 
 export type State = {
   map: MapCell[];
@@ -30,12 +17,10 @@ export type Range2 = {
 
 export function getInitialState(): State { 
   const map: MapCell[] = [
-    { type: 'city-hall', row: 0, column: 3 },
-    { type: 'service-road', row: 0, column: 1 },
-    { type: 'service-road', row: 0, column: 2 },
+    new CityHallCell(0, 3),
   ];
   for (let row = -100; row <= 100; row++) {
-    map.push({ type: 'freeway-cooridor', row, column: 0 });
+    map.push(new FreewayCorridorCell(row, 0));
   }
   return {
     map,
@@ -68,7 +53,7 @@ export function getCell(row: number, column: number, { map }: State): MapCell {
   const match = map.find(
     (cell) => cell.row === row && cell.column === column
   );
-  return match ?? { type: 'empty', row, column };
+  return match ?? new EmptyCell(row, column);
 }
 
 export function placeTile(
@@ -102,7 +87,7 @@ export function placeTile(
     } else {
       newTiles.set(type, newTileCount);
     }
-    newMap.push({ type, row, column });
+    // newMap.push({ type, row, column });
   }
   return {
     ...state,

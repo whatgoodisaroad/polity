@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
-import React, { useState } from 'react';
-import { CellType, getGrid, getInitialState, placeTile } from './game';
+import React, { useEffect, useRef, useState } from 'react';
+import { getGrid, getInitialState, placeTile } from './game';
+import { CellType } from './cell';
 
 function Game(): React.ReactNode {
   const [state, setState] = useState(getInitialState());
@@ -12,7 +13,6 @@ function Game(): React.ReactNode {
   const rowEnd = centerRow + zoom * 0.5;
   const colStart = centerColumn - Math.floor(aspect * zoom * 0.5);
   const colEnd = centerColumn + Math.floor(aspect * zoom * 0.5);
-  const rows = getGrid(state, { rowStart, rowEnd, colStart, colEnd });
 
   const zoomIn = () => setZoom(Math.max(zoom * 0.5, 4));
   const zoomOut = () => setZoom(Math.min(zoom * 2, 64));
@@ -21,35 +21,36 @@ function Game(): React.ReactNode {
   const moveLeft = () => setCenterColumn(centerColumn - Math.max(2, Math.floor(aspect * zoom * 0.25)));
   const moveRight = () => setCenterColumn(centerColumn + Math.max(2, Math.floor(aspect * zoom * 0.25)));
 
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const canvasHeight = 600;
+  const canvasWidth = Math.floor(aspect * canvasHeight)
+
+  useEffect(() => {
+    const context = canvasRef.current?.getContext('2d');
+    if (!context) {
+      return;
+    }
+    const cellHeight = Math.floor(canvasHeight / zoom);
+    const cellWidth = Math.floor(canvasWidth / Math.floor(aspect * zoom));
+    const visible = getGrid(state, { rowStart, rowEnd, colStart, colEnd }).flat();
+    for (const cell of visible) {
+      const { row, column } = cell;
+      const y = (row - rowStart) * cellHeight;
+      const x = (column - colStart) * cellWidth;
+      cell.paint({
+        context,
+        x,
+        y,
+        h: cellHeight,
+        w: cellWidth,
+      });
+    }
+  }, [state.map, zoom, centerRow, centerColumn]);
+
+  
   return <div>
-    <table
-      cellPadding={0}
-      className={`map zoom-level-${zoom}`}
-      onClick={(e) => {
-        const target = e.target as HTMLTableCellElement;
-        if (!target.classList.contains('cell') || !state.paintTile) {
-          return;
-        }
-        const row = parseInt(target.dataset.row ?? '', 10);
-        const column = parseInt(target.dataset.column ?? '', 10);
-        setState(placeTile(state, state.paintTile, row, column));
-      }}
-    >
-      <tbody>
-        {rows.map((cells) => (
-          <tr key={`row-${cells[0].row}`} >
-            {cells.map((cell) => (
-              <td
-                className={`cell cell-${cell.type}`}
-                data-row={cell.row}
-                data-column={cell.column}
-                key={`cell-${cell.row}-${cell.column}`}
-              />
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <canvas ref={canvasRef} height={canvasHeight} width={canvasWidth} />
     <ul
       className="tile-bank"
       onClick={(e) => {
