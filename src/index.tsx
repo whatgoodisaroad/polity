@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useRef, useState } from 'react';
 import { getGrid, getInitialState, placeTile } from './game';
-import { CellType } from './cell';
+import { CellType, PaintPass } from './cell';
 
 function Game(): React.ReactNode {
   const [state, setState] = useState(getInitialState());
@@ -34,17 +34,20 @@ function Game(): React.ReactNode {
     const cellHeight = Math.floor(canvasHeight / zoom);
     const cellWidth = Math.floor(canvasWidth / Math.floor(aspect * zoom));
     const visible = getGrid(state, { rowStart, rowEnd, colStart, colEnd }).flat();
-    for (const cell of visible) {
-      const { row, column } = cell;
-      const y = (row - rowStart) * cellHeight;
-      const x = (column - colStart) * cellWidth;
-      cell.paint({
-        context,
-        x,
-        y,
-        h: cellHeight,
-        w: cellWidth,
-      });
+    for (const pass of [0, 1] as PaintPass[]) {
+      for (const cell of visible) {
+        const { row, column } = cell;
+        const y = (row - rowStart) * cellHeight;
+        const x = (column - colStart) * cellWidth;
+        cell.paint({
+          context,
+          x,
+          y,
+          h: cellHeight,
+          w: cellWidth,
+          pass,
+        });
+      }
     }
   }, [state.map, zoom, centerRow, centerColumn]);
 
