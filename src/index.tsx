@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
-import React, { useEffect, useRef, useState } from 'react';
-import { getGrid, getInitialState, getNeighbors, placeTile } from './game';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { getCell, getGrid, getInitialState, getNeighbors, placeTile } from './game';
 import { CellType, PaintPass } from './cell';
 
 function Game(): React.ReactNode {
@@ -8,6 +8,13 @@ function Game(): React.ReactNode {
   const [zoom, setZoom] = useState(16);
   const [centerRow, setCenterRow] = useState(0);
   const [centerColumn, setCenterColumn] = useState(0);
+  const [hover, setHover] = useState<{ row: number; column: number } | null>(null);
+  
+  const hoverCell = useMemo(
+    () => hover ? getCell(hover?.row, hover?.column, state) : null,
+    [state.map, hover?.row, hover?.column]
+  );
+
   const aspect = 1.8;
   const rowStart = centerRow - zoom * 0.5;
   const rowEnd = centerRow + zoom * 0.5;
@@ -22,9 +29,22 @@ function Game(): React.ReactNode {
   const moveRight = () => setCenterColumn(centerColumn + Math.max(2, Math.floor(aspect * zoom * 0.25)));
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const canvasHeight = 600;
-  const canvasWidth = Math.floor(aspect * canvasHeight)
+  const canvasWidth = Math.floor(aspect * canvasHeight);
+
+  const offsetToCoord = (
+    offsetX: number,
+    offsetY: number
+  ): {
+    row: number;
+    column: number;
+  } => {
+    const rowInFrame = Math.floor(zoom * offsetY / canvasHeight);
+    const columnInFrame = Math.floor(zoom * aspect * offsetX / canvasWidth);
+    const row = rowStart + rowInFrame;
+    const column = colStart + columnInFrame;
+    return { row, column };
+  };
 
   useEffect(() => {
     const context = canvasRef.current?.getContext('2d');
@@ -50,7 +70,17 @@ function Game(): React.ReactNode {
         });
       }
     }
-  }, [state.map, zoom, centerRow, centerColumn]);
+
+    if (hover) {
+      const { row, column } = hover;
+      const y = (row - rowStart) * cellHeight;
+      const x = (column - colStart) * cellWidth;
+      context.strokeStyle = '#000';
+      context.lineWidth = 1;
+      context.strokeRect(x, y, cellWidth, cellHeight);
+    }
+
+  }, [state.map, zoom, centerRow, centerColumn, hover?.row, hover?.column]);
 
   return <div>
     <canvas
@@ -62,12 +92,13 @@ function Game(): React.ReactNode {
           return;
         }
         const { offsetX, offsetY } = e.nativeEvent;
-        const rowInFrame = Math.floor(zoom * offsetY / canvasHeight);
-        const columnInFrame = Math.floor(zoom * aspect * offsetX / canvasWidth);
-        const row = rowStart + rowInFrame;
-        const column = colStart + columnInFrame;
-        console.log(row, column);
+        const { row, column } = offsetToCoord(offsetX, offsetY);
         setState(placeTile(state, state.paintTile, row, column));
+      }}
+      onMouseMove={(e) => {
+        const { offsetX, offsetY } = e.nativeEvent;
+        const { row, column } = offsetToCoord(offsetX, offsetY);
+        setHover({ row, column });
       }}
     />
     <ul
@@ -102,6 +133,9 @@ function Game(): React.ReactNode {
       <button onClick={moveDown}>⬇</button>
       <button onClick={moveLeft}>⬅</button>
       <button onClick={moveRight}>⮕</button>
+    </div>
+    <div>
+      {hoverCell ? hoverCell.type : 'No cell selected'}
     </div>
   </div>;
 }

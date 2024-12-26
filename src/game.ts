@@ -1,5 +1,4 @@
-import { CellType, CityHallCell, EmptyCell, FreewayCorridorCell, MapCell } from "./cell";
-
+import { CellType, CityHallCell, EmptyCell, FreewayCorridorCell, MapCell, VoidCell } from "./cell";
 
 export type State = {
   map: MapCell[];
@@ -16,12 +15,18 @@ export type Range2 = {
 }
 
 export function getInitialState(): State { 
-  const map: MapCell[] = [
-    new CityHallCell(0, 3),
-  ];
-  for (let row = -100; row <= 100; row++) {
-    map.push(new FreewayCorridorCell(row, 0));
-  }
+  const map: MapCell[] = [];
+  for (let row = -5; row <= 5; row++) {
+    for (let column = -5; column <= 5; column++) {
+      if (row === 0 && column === 3) {
+        map.push( new CityHallCell(row, column));
+      } else if (column === 0) {
+        map.push(new FreewayCorridorCell(row, column));
+      } else {
+        map.push(new EmptyCell(row, column));
+      }
+    }
+  }  
   return {
     map,
     tiles: new Map([
@@ -54,7 +59,7 @@ export function getCell(row: number, column: number, { map }: State): MapCell {
   const match = map.find(
     (cell) => cell.row === row && cell.column === column
   );
-  return match ?? new EmptyCell(row, column);
+  return match ?? new VoidCell(row, column);
 }
 
 export type Neighbors = {
@@ -88,7 +93,6 @@ export function placeTile(
   column: number
 ): State {
   const cell = getCell(row, column, state);
-  
   if (cell.type !== 'empty') {
     return { 
       ...state,
@@ -98,7 +102,9 @@ export function placeTile(
 
   const tileCount = state.tiles.get(type) ?? 0;
   const newTiles = new Map([...state.tiles]);
-  const newMap = [...state.map];
+  const newMap = [
+    ...state.map.filter((cell) => cell.row !== row || cell.column !== column),
+  ];
   let paintTile: CellType | undefined = state.paintTile;
   const newLog = [...state.log];
 

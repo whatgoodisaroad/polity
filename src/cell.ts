@@ -1,5 +1,15 @@
 import { Neighbors } from "./game";
 
+const Color = {
+  buildingFill: '#d1d1d1',
+  buildingBorder: '#929494',
+  commercialBuildingFill: '#ede5b9',
+  debris: '#888',
+  developed: '#e6e6e6',
+  road: '#fff',
+  soil: '#e8be99',
+};
+
 export type CellType =
   | 'empty'
   | 'city-hall'
@@ -8,7 +18,8 @@ export type CellType =
   | 'commercial'
   | 'freeway-corridoor'
   | 'commercial-corridor'
-  | 'service-road';
+  | 'service-road'
+  | 'void';
 
 export type PaintPass = 0 | 1;
 
@@ -46,10 +57,10 @@ export class EmptyCell implements MapCell {
   
   paint({ context, x, y, w, h, pass }: PaintArgs) {
     if (pass === 0) {
-      context.fillStyle = '#e8be99';
+      context.fillStyle = Color.soil;
       context.fillRect(x, y, w, h);
     } else {
-      context.fillStyle = '#555';
+      context.fillStyle = Color.debris;
       for (const { dh, dv } of this.debris) {
         context.beginPath();
         context.arc(
@@ -62,6 +73,25 @@ export class EmptyCell implements MapCell {
         context.fill();
       }
     }
+  }
+}
+
+export class VoidCell implements MapCell {
+  type: CellType = 'void';
+  row: number;
+  column: number;
+  
+  constructor(row: number, column: number) {
+    this.row = row;
+    this.column = column;
+  }
+  
+  paint({ context, x, y, w, h, pass }: PaintArgs) {
+    if (pass !== 0) {
+      return;
+    }
+    context.fillStyle = '#000';
+    context.fillRect(x, y, w, h);
   }
 }
 
@@ -79,8 +109,19 @@ export class CityHallCell implements MapCell {
     if (pass !== 0) {
       return;
     }
-    context.fillStyle = '#ff0000';
+    context.fillStyle = Color.developed;
     context.fillRect(x, y, w, h);
+
+    context.strokeStyle = Color.buildingBorder;
+    context.lineWidth = w * 0.005;
+
+    context.fillStyle = Color.buildingFill;
+    context.fillRect(x + 0.4 * w, y + 0.1 * h, w * 0.5, h * 0.7);
+    context.strokeRect(x + 0.4 * w, y + 0.1 * h, w * 0.5, h * 0.7);
+
+    context.fillStyle = Color.commercialBuildingFill;
+    context.fillRect(x + 0.1 * w, y + 0.1 * h, w * 0.3, h * 0.8);
+    context.strokeRect(x + 0.1 * w, y + 0.1 * h, w * 0.3, h * 0.8);
   }
 }
 
@@ -96,7 +137,7 @@ export class FreewayCorridorCell implements MapCell {
   
   paint({ context, x, y, w, h, pass, neighbors}: PaintArgs) {
     if (pass === 0) {
-      context.fillStyle = '#e8be99';
+      context.fillStyle = Color.soil;
       context.fillRect(x, y, w, h);
     } else {
       const connections = Object.entries(neighbors)
@@ -104,8 +145,8 @@ export class FreewayCorridorCell implements MapCell {
         .map(([key]) => key) as (keyof Neighbors)[];
       
       context.beginPath();
-      context.strokeStyle = '#fff';
-      context.lineWidth = w * 0.2;
+      context.strokeStyle = Color.road;
+      context.lineWidth = w * 0.02;
 
       if (connections.length === 0) {
         context.arc(
