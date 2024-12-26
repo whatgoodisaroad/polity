@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useRef, useState } from 'react';
-import { getGrid, getInitialState, placeTile } from './game';
+import { getGrid, getInitialState, getNeighbors, placeTile } from './game';
 import { CellType, PaintPass } from './cell';
 
 function Game(): React.ReactNode {
@@ -46,14 +46,30 @@ function Game(): React.ReactNode {
           h: cellHeight,
           w: cellWidth,
           pass,
+          neighbors: getNeighbors(row, column, state),
         });
       }
     }
   }, [state.map, zoom, centerRow, centerColumn]);
 
-  
   return <div>
-    <canvas ref={canvasRef} height={canvasHeight} width={canvasWidth} />
+    <canvas
+      ref={canvasRef}
+      height={canvasHeight}
+      width={canvasWidth}
+      onClick={(e) => {
+        if (!state.paintTile) {
+          return;
+        }
+        const { offsetX, offsetY } = e.nativeEvent;
+        const rowInFrame = Math.floor(zoom * offsetY / canvasHeight);
+        const columnInFrame = Math.floor(zoom * aspect * offsetX / canvasWidth);
+        const row = rowStart + rowInFrame;
+        const column = colStart + columnInFrame;
+        console.log(row, column);
+        setState(placeTile(state, state.paintTile, row, column));
+      }}
+    />
     <ul
       className="tile-bank"
       onClick={(e) => {
@@ -65,12 +81,12 @@ function Game(): React.ReactNode {
         setState({ ...state, paintTile: type });
       }}
     >
-      {[...state.tiles.entries()].map(([type, count]) => {
+      {[...state.tiles.entries()].map(([type, count], i) => {
         const selected = state.paintTile === type;
         return <li
           className="tile-bank-entry"
           data-type={type}
-          key={`tile-bank-entry-${type}`}
+          key={`tile-bank-entry-${type}-${i}`}
         >
           {selected ? '* ' : ''}{type}: {count}
         </li>

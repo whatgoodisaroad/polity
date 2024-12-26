@@ -28,6 +28,7 @@ export function getInitialState(): State {
       ['residential', 4],
       ['commercial', 4],
       ['industrial', 4],
+      ['freeway-corridoor', 100],
     ]),
     log: ['Welcome!'],
   };
@@ -54,6 +55,30 @@ export function getCell(row: number, column: number, { map }: State): MapCell {
     (cell) => cell.row === row && cell.column === column
   );
   return match ?? new EmptyCell(row, column);
+}
+
+export type Neighbors = {
+  n: MapCell;
+  ne: MapCell;
+  e: MapCell;
+  se: MapCell;
+  s: MapCell;
+  sw: MapCell;
+  w: MapCell;
+  nw: MapCell;
+};
+
+export function getNeighbors(row: number, column: number, state: State): Neighbors {
+  return {
+    n: getCell(row - 1, column, state),
+    ne: getCell(row - 1, column + 1, state),
+    e: getCell(row, column + 1, state),
+    se: getCell(row + 1, column + 1, state),
+    s: getCell(row + 1, column, state),
+    sw: getCell(row + 1, column - 1, state),
+    w: getCell(row, column - 1, state),
+    nw: getCell(row - 1, column - 1, state),
+  };
 }
 
 export function placeTile(
@@ -87,7 +112,9 @@ export function placeTile(
     } else {
       newTiles.set(type, newTileCount);
     }
-    // newMap.push({ type, row, column });
+    if (type === 'freeway-corridoor') {
+      newMap.push(new FreewayCorridorCell(row, column));
+    }
   }
   return {
     ...state,
