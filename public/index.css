@@ -19,14 +19,37 @@ body {
 
 .card {
   width: 200px;
-  height: 400px;
+  height: 300px;
   border: 1px solid black;
   border-radius: 10px;
   position: relative;
+  background-color: #fff;
 }
 .card .card-title {
   font-weight: bold;
+  height: 40px;
+  display: block;
 }
 .card .card-image {
+  height: 160px;
   width: 100%;
+  background-size: cover;
+}
+
+.hand {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+}
+
+.hand .card {
+  cursor: pointer;
+  margin-left: -20px;
+  transition: transform 250ms;
+}
+.hand .card:first-of-type {
+  margin-left: 0;
+}
+.hand .card:hover {
+  transform: rotate(0) translateY(-30px) !important;
 }

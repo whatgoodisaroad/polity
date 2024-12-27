@@ -165,10 +165,7 @@ function Game(): React.ReactNode {
       </div>
     </Row>
     <div>
-      <h1>Hand</h1>
-      <Row>
-        {state.hand.map((card) => <Card card={card} />)}
-      </Row>
+      <Hand hand={state.hand} />
     </div>
   </div>;
 }
@@ -181,10 +178,44 @@ function Row({ children }: { children: React.ReactNode }): React.ReactNode {
   );
 }
 
+function Hand({ hand }: { hand: BaseCard[] }): React.ReactNode {
+  const handRef = useRef<HTMLDivElement>(null);
+  const maxAngle = 10;
+  const maxOffset = 30;
+
+  useEffect(() => {
+    if (!handRef.current) {
+      return;
+    }
+    const cardElems = [...handRef.current.querySelectorAll('.card')];
+    cardElems.forEach((cardElem, index) => {
+      const centered = index + 0.5 - (cardElems.length / 2);
+      const angle = maxAngle * centered;
+      const offset = maxOffset * Math.abs(centered);
+      cardElem.setAttribute(
+        'style',
+        `transform: rotate(${-angle}deg) translateY(${offset}px);`
+      );
+    });
+  }, hand);
+
+
+  return (
+    <div className="hand" ref={handRef}>
+      {hand.map((card) => <Card card={card} />)}
+    </div>
+  );
+}
+
 function Card({ card }: { card: BaseCard }): React.ReactNode {
   return <div className="card">
-    <div >{card.name}</div>
-    {card.imageUrl && (<img className="card-image" src={card.imageUrl} />)}
+    <div className="card-title">{card.name}</div>
+    {card.imageUrl && (
+      <div
+        className="card-image"
+        style={{backgroundImage: `url(${card.imageUrl})` }}
+      />
+    )}
   </div>;
 }
 

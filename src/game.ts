@@ -94,7 +94,7 @@ export function getInitialState(): State {
   return {
     map,
     tiles: new Map([
-      ['residential', 4],
+      ['residential', 100],
     ]),
     log: ['Welcome!'],
     stats: new Map(),
