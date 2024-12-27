@@ -12,3 +12,21 @@ body {
 .tile-bank .tile-bank-entry:hover {
   outline: 1px solid black;
 }
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.card {
+  width: 200px;
+  height: 400px;
+  border: 1px solid black;
+  border-radius: 10px;
+  position: relative;
+}
+.card .card-title {
+  font-weight: bold;
+}
+.card .card-image {
+  width: 100%;
+}

@@ -1,3 +1,4 @@
+import { BaseCard, ExpandMunicipalCharter, HousingDevelopmentInitiativeCard } from "./card";
 import { CityHallCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
 import type { CellType, MapCell } from "./cells/base";
 
@@ -17,6 +18,9 @@ export type State = {
   paintTile?: CellType;
   log: string[];
   stats: Map<StatKey, Stat>;
+  hand: BaseCard[];
+  deck: BaseCard[];
+  discard: BaseCard[];
 };
 
 export type Range2 = {
@@ -91,10 +95,22 @@ export function getInitialState(): State {
     map,
     tiles: new Map([
       ['residential', 4],
-      // ['freeway-corridoor', 100],
     ]),
     log: ['Welcome!'],
     stats: new Map(),
+    hand: [],
+    deck: [
+      new ExpandMunicipalCharter(),
+      new HousingDevelopmentInitiativeCard(),
+      new HousingDevelopmentInitiativeCard(),
+      new HousingDevelopmentInitiativeCard(),
+      new HousingDevelopmentInitiativeCard(),
+      new HousingDevelopmentInitiativeCard(),
+      new HousingDevelopmentInitiativeCard(),
+      new HousingDevelopmentInitiativeCard(),
+      new HousingDevelopmentInitiativeCard(),
+    ],
+    discard: [],
   };
 }
 
@@ -193,10 +209,32 @@ export function placeTile(
   };
 }
 
+const HAND_SIZE = 5;
+
 export function applyStartOfRoundEffects(state: State): State {
-  let newState = { ...state };
+  let newState = { ...state, };
   for (const cell of state.map) {
     newState = cell.applyStartOfRoundEffects(newState);
   }
-  return newState;
+
+  let hand = [ ...state.hand ];
+  let deck = [ ...state.deck ];
+  let discard = [ ...state.discard ];
+
+  discard.push(...hand);
+  while (hand.length < HAND_SIZE) {
+    if (deck.length === 0) {
+      deck = discard;
+      discard = [];
+    }
+    hand.push(deck[0]);
+    deck = deck.slice(1);
+  }
+
+  return {
+    ...newState,
+    hand,
+    deck,
+    discard,
+  };
 }

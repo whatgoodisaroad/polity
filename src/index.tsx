@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { applyStartOfRoundEffects, getCell, getGrid, getInitialState, getNeighbors, placeTile } from './game';
 import { CellType, PaintPass } from './cells/base';
+import { BaseCard } from './card';
 
 function Game(): React.ReactNode {
   const [state, setState] = useState(applyStartOfRoundEffects(getInitialState()));
@@ -102,70 +103,88 @@ function Game(): React.ReactNode {
         setHover({ row, column });
       }}
     />
-    <ul
-      className="tile-bank"
-      onClick={(e) => {
-        const target = e.target as HTMLTableCellElement;
-        if (!target.classList.contains('tile-bank-entry')) {
-          return;
-        }
-        const type = target.dataset.type as CellType;
-        setState({ ...state, paintTile: type });
-      }}
-    >
-      {[...state.tiles.entries()].map(([type, count], i) => {
-        const selected = state.paintTile === type;
-        return <li
-          className="tile-bank-entry"
-          data-type={type}
-          key={`tile-bank-entry-${type}-${i}`}
-        >
-          {selected ? '* ' : ''}{type}: {count}
-        </li>
-      })}
-    </ul>
-    {/* <ul className="log">
-      {state.log.map((entry) => <li key={entry}>{entry}</li>)}
-    </ul> */}
-    <div>
-      <button onClick={zoomOut}>-</button>
-      <button onClick={zoomIn}>+</button>
-      <button onClick={moveUp}>⬆</button>
-      <button onClick={moveDown}>⬇</button>
-      <button onClick={moveLeft}>⬅</button>
-      <button onClick={moveRight}>⮕</button>
-      <button onClick={endTurn}>End Turn</button>
-    </div>
-    <div>
-      {hoverCell && <>
-        <h1>Selected Cell</h1>
+    <Row>
+      <ul
+        className="tile-bank"
+        onClick={(e) => {
+          const target = e.target as HTMLTableCellElement;
+          if (!target.classList.contains('tile-bank-entry')) {
+            return;
+          }
+          const type = target.dataset.type as CellType;
+          setState({ ...state, paintTile: type });
+        }}
+      >
+        {[...state.tiles.entries()].map(([type, count], i) => {
+          const selected = state.paintTile === type;
+          return <li
+            className="tile-bank-entry"
+            data-type={type}
+            key={`tile-bank-entry-${type}-${i}`}
+          >
+            {selected ? '* ' : ''}{type}: {count}
+          </li>
+        })}
+      </ul>
+      <div>
+        <button onClick={zoomOut}>-</button>
+        <button onClick={zoomIn}>+</button>
+        <button onClick={moveUp}>⬆</button>
+        <button onClick={moveDown}>⬇</button>
+        <button onClick={moveLeft}>⬅</button>
+        <button onClick={moveRight}>⮕</button>
+        <button onClick={endTurn}>End Turn</button>
+      </div>
+      <div>
+        {hoverCell && <>
+          <table>
+            <tbody>
+              {[...hoverCell.getDescription().entries()].map(([key, value]) => (
+                <tr>
+                  <td>{key}:</td>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>}
+      </div>
+      <div>
         <table>
           <tbody>
-            {[...hoverCell.getDescription().entries()].map(([key, value]) => (
-              <tr>
-                <td>{key}:</td>
-                <td>{value}</td>
+            {[...state.stats.entries()].map(([key, value]) => (
+              <tr key={key}>
+                <td>{value.displayName ?? key}:</td>
+                <td>
+                  {value.value} {value.max ? ` / ${value.max}` : ''}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </>}
-    </div>
+      </div>
+    </Row>
     <div>
-      <h1>Stats</h1>
-      <table>
-        <tbody>
-          {[...state.stats.entries()].map(([key, value]) => (
-            <tr key={key}>
-              <td>{value.displayName ?? key}:</td>
-              <td>
-                {value.value} {value.max ? ` / ${value.max}` : ''}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h1>Hand</h1>
+      <Row>
+        {state.hand.map((card) => <Card card={card} />)}
+      </Row>
     </div>
+  </div>;
+}
+
+function Row({ children }: { children: React.ReactNode }): React.ReactNode {
+  return (
+    <div className="row">
+      {children}
+    </div>
+  );
+}
+
+function Card({ card }: { card: BaseCard }): React.ReactNode {
+  return <div className="card">
+    <div >{card.name}</div>
+    {card.imageUrl && (<img className="card-image" src={card.imageUrl} />)}
   </div>;
 }
 
