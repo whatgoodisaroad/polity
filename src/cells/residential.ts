@@ -1,4 +1,4 @@
-import { State } from "../game";
+import { getStatValue, modifyStat, State } from "../game";
 import { Color, MapCell, PaintArgs } from "./base";
 
 type Dwelling = {
@@ -30,15 +30,17 @@ export class ResidentialCell extends MapCell {
       .map((_, i) => i)
       .filter((i) => !existingIndexes.has(i));
     const indexIndex = Math.floor(Math.random() * availableIndices.length);
-    
+    const coordinateIndex = availableIndices[indexIndex];
+    const propertyValue = 250_000 + Math.floor(Math.random() * 50_000);
+
     return new ResidentialCell(
       this.row,
       this.column,
       [
         ...this.dwellings,
         {
-          propertyValue: 100_000,
-          coordinateIndex: availableIndices[indexIndex],
+          propertyValue,
+          coordinateIndex,
         },
       ]
     );
@@ -90,7 +92,6 @@ export class ResidentialCell extends MapCell {
     context.stroke();
 
     // Dwellings
-    console.log(this.dwellings);
     for (const { coordinateIndex } of this.dwellings) {
       const [x, y, w, h] = HOUSE_COORDINATES[coordinateIndex];
       drawHouse(x, y, w, h, args);
@@ -103,8 +104,8 @@ export class ResidentialCell extends MapCell {
 
   getTotalPropertyValue(): number {
     return this.dwellings
-    .map(({ propertyValue }) => propertyValue)
-    .reduce((v, acc) => v + acc, 0);
+      .map(({ propertyValue }) => propertyValue)
+      .reduce((v, acc) => v + acc, 0);
   }
 
   getDescription(): Map<string, string> {
@@ -117,15 +118,10 @@ export class ResidentialCell extends MapCell {
   }
 
   applyStartOfRoundEffects(state: State): State {
-    const stats = new Map(state.stats);
-    const oldMoney = stats.get('money') ?? 0;
-    const residentialTaxRate = stats.get('residentialTaxRate') ?? 0;
-    stats.set(
-      'money',
-      oldMoney + Math.floor(
-        this.getTotalPropertyValue() * residentialTaxRate / 12
-      )
-    );
+    const residentialTaxRate = getStatValue(state, 'residentialTaxRate');
+    state = modifyStat(state, 'money', (value) => value + Math.floor(
+      this.getTotalPropertyValue() * residentialTaxRate / 12
+    ));
     
     const map = state.map.filter(
       ({ row, column}) => row !== this.row || column !== this.column
@@ -138,7 +134,6 @@ export class ResidentialCell extends MapCell {
 
     return {
       ...state,
-      stats,
       map,
     }
   }

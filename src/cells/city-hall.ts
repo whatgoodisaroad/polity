@@ -1,4 +1,4 @@
-import { State } from "../game";
+import { modifyStat, State } from "../game";
 import { Color, MapCell, PaintArgs } from "./base";
 
 export class CityHallCell extends MapCell {
@@ -33,12 +33,6 @@ export class CityHallCell extends MapCell {
   }
 
   applyStartOfRoundEffects(state: State): State {
-    const stats = new Map(state.stats);
-    const oldAp = stats.get('ap') ?? 0;
-    stats.set('ap', oldAp + 1);
-    return {
-      ...state,
-      stats,
-    }
+    return modifyStat(state, 'ap', (value) => value + 1);
   }
 }

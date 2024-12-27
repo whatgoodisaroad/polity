@@ -156,9 +156,11 @@ function Game(): React.ReactNode {
       <table>
         <tbody>
           {[...state.stats.entries()].map(([key, value]) => (
-            <tr>
-              <td>{key}:</td>
-              <td>{value}</td>
+            <tr key={key}>
+              <td>{value.displayName ?? key}:</td>
+              <td>
+                {value.value} {value.max ? ` / ${value.max}` : ''}
+              </td>
             </tr>
           ))}
         </tbody>
