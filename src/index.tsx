@@ -1,11 +1,11 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getCell, getGrid, getInitialState, getNeighbors, placeTile } from './game';
-import { CellType, PaintPass } from './cell';
+import { CellType, PaintPass } from './cells/base';
 
 function Game(): React.ReactNode {
   const [state, setState] = useState(getInitialState());
-  const [zoom, setZoom] = useState(16);
+  const [zoom, setZoom] = useState(8);
   const [centerRow, setCenterRow] = useState(0);
   const [centerColumn, setCenterColumn] = useState(0);
   const [hover, setHover] = useState<{ row: number; column: number } | null>(null);
@@ -23,8 +23,8 @@ function Game(): React.ReactNode {
 
   const zoomIn = () => setZoom(Math.max(zoom * 0.5, 4));
   const zoomOut = () => setZoom(Math.min(zoom * 2, 64));
-  const moveUp = () => setCenterRow(centerRow - zoom * 0.25);
-  const moveDown = () => setCenterRow(centerRow + zoom * 0.25);
+  const moveUp = () => setCenterRow(centerRow - zoom * 0.5);
+  const moveDown = () => setCenterRow(centerRow + zoom * 0.5);
   const moveLeft = () => setCenterColumn(centerColumn - Math.max(2, Math.floor(aspect * zoom * 0.25)));
   const moveRight = () => setCenterColumn(centerColumn + Math.max(2, Math.floor(aspect * zoom * 0.25)));
 
@@ -135,7 +135,18 @@ function Game(): React.ReactNode {
       <button onClick={moveRight}>⮕</button>
     </div>
     <div>
-      {hoverCell ? hoverCell.type : 'No cell selected'}
+      {hoverCell && <>
+        <table>
+          <tbody>
+            {[...hoverCell.getDescription().entries()].map(([key, value]) => (
+              <tr>
+                <td>{key}:</td>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </>}
     </div>
   </div>;
 }

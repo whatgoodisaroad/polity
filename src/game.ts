@@ -1,4 +1,5 @@
-import { CellType, CityHallCell, EmptyCell, FreewayCorridorCell, MapCell, VoidCell } from "./cell";
+import { CityHallCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
+import type { CellType, MapCell } from "./cells/base";
 
 export type State = {
   map: MapCell[];
@@ -31,8 +32,6 @@ export function getInitialState(): State {
     map,
     tiles: new Map([
       ['residential', 4],
-      ['commercial', 4],
-      ['industrial', 4],
       ['freeway-corridoor', 100],
     ]),
     log: ['Welcome!'],
@@ -118,8 +117,11 @@ export function placeTile(
     } else {
       newTiles.set(type, newTileCount);
     }
+
     if (type === 'freeway-corridoor') {
       newMap.push(new FreewayCorridorCell(row, column));
+    } else if (type === 'residential') {
+      newMap.push(new ResidentialCell(row, column));
     }
   }
   return {
