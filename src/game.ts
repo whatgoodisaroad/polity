@@ -6,6 +6,7 @@ export type State = {
   tiles: Map<CellType, number>;
   paintTile?: CellType;
   log: string[];
+  stats: Map<string, number>;
 };
 
 export type Range2 = {
@@ -32,9 +33,12 @@ export function getInitialState(): State {
     map,
     tiles: new Map([
       ['residential', 4],
-      ['freeway-corridoor', 100],
+      // ['freeway-corridoor', 100],
     ]),
     log: ['Welcome!'],
+    stats: new Map([
+      ['residentialTaxRate', 0.05],
+    ]),
   };
 }
 
@@ -131,4 +135,12 @@ export function placeTile(
     paintTile,
     log: newLog,
   };
+}
+
+export function applyStartOfRoundEffects(state: State): State {
+  let newState = { ...state };
+  for (const cell of state.map) {
+    newState = cell.applyStartOfRoundEffects(newState);
+  }
+  return newState;
 }

@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { getCell, getGrid, getInitialState, getNeighbors, placeTile } from './game';
+import { applyStartOfRoundEffects, getCell, getGrid, getInitialState, getNeighbors, placeTile } from './game';
 import { CellType, PaintPass } from './cells/base';
 
 function Game(): React.ReactNode {
-  const [state, setState] = useState(getInitialState());
+  const [state, setState] = useState(applyStartOfRoundEffects(getInitialState()));
   const [zoom, setZoom] = useState(8);
   const [centerRow, setCenterRow] = useState(0);
   const [centerColumn, setCenterColumn] = useState(0);
@@ -27,6 +27,7 @@ function Game(): React.ReactNode {
   const moveDown = () => setCenterRow(centerRow + zoom * 0.5);
   const moveLeft = () => setCenterColumn(centerColumn - Math.max(2, Math.floor(aspect * zoom * 0.25)));
   const moveRight = () => setCenterColumn(centerColumn + Math.max(2, Math.floor(aspect * zoom * 0.25)));
+  const endTurn = () => setState(applyStartOfRoundEffects(state));
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasHeight = 600;
@@ -123,9 +124,9 @@ function Game(): React.ReactNode {
         </li>
       })}
     </ul>
-    <ul className="log">
+    {/* <ul className="log">
       {state.log.map((entry) => <li key={entry}>{entry}</li>)}
-    </ul>
+    </ul> */}
     <div>
       <button onClick={zoomOut}>-</button>
       <button onClick={zoomIn}>+</button>
@@ -133,9 +134,11 @@ function Game(): React.ReactNode {
       <button onClick={moveDown}>⬇</button>
       <button onClick={moveLeft}>⬅</button>
       <button onClick={moveRight}>⮕</button>
+      <button onClick={endTurn}>End Turn</button>
     </div>
     <div>
       {hoverCell && <>
+        <h1>Selected Cell</h1>
         <table>
           <tbody>
             {[...hoverCell.getDescription().entries()].map(([key, value]) => (
@@ -147,6 +150,19 @@ function Game(): React.ReactNode {
           </tbody>
         </table>
       </>}
+    </div>
+    <div>
+      <h1>Stats</h1>
+      <table>
+        <tbody>
+          {[...state.stats.entries()].map(([key, value]) => (
+            <tr>
+              <td>{key}:</td>
+              <td>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   </div>;
 }

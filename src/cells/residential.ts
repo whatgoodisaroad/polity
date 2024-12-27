@@ -1,3 +1,4 @@
+import { State } from "../game";
 import { Color, MapCell, PaintArgs } from "./base";
 
 type Dwelling = {
@@ -100,16 +101,46 @@ export class ResidentialCell extends MapCell {
     return HOUSE_COORDINATES.length;
   }
 
+  getTotalPropertyValue(): number {
+    return this.dwellings
+    .map(({ propertyValue }) => propertyValue)
+    .reduce((v, acc) => v + acc, 0);
+  }
+
   getDescription(): Map<string, string> {
-    const totalValue = this.dwellings
-      .map(({ propertyValue }) => propertyValue)
-      .reduce((v, acc) => v + acc, 0);
     return new Map([
       ['Type', this.type],
       ['Lots', `${this.getLotCount()}`],
       ['Dwellings', `${this.dwellings.length}`],
-      ['Total Property Value', `${totalValue}`],
+      ['Total Property Value', `${this.getTotalPropertyValue()}`],
     ]);
+  }
+
+  applyStartOfRoundEffects(state: State): State {
+    const stats = new Map(state.stats);
+    const oldMoney = stats.get('money') ?? 0;
+    const residentialTaxRate = stats.get('residentialTaxRate') ?? 0;
+    stats.set(
+      'money',
+      oldMoney + Math.floor(
+        this.getTotalPropertyValue() * residentialTaxRate / 12
+      )
+    );
+    
+    const map = state.map.filter(
+      ({ row, column}) => row !== this.row || column !== this.column
+    );
+    if (Math.random() > 0.8) {
+      map.push(this.addDwelling());
+    } else {
+      map.push(this);
+    }
+
+    return {
+      ...state,
+      stats,
+      map,
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { Neighbors } from "../game";
+import { Neighbors, State } from "../game";
 
 export const Color = {
   buildingFill: '#d1d1d1',
@@ -48,6 +48,10 @@ export abstract class MapCell {
 
   getDescription(): Map<string, string> {
     return new Map([['Type', this.type]]);
+  }
+
+  applyStartOfRoundEffects(state: State): State {
+    return state;
   }
 }
 

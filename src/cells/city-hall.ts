@@ -1,3 +1,4 @@
+import { State } from "../game";
 import { Color, MapCell, PaintArgs } from "./base";
 
 export class CityHallCell extends MapCell {
@@ -22,5 +23,22 @@ export class CityHallCell extends MapCell {
     context.fillStyle = Color.commercialBuildingFill;
     context.fillRect(x + 0.1 * w, y + 0.1 * h, w * 0.3, h * 0.8);
     context.strokeRect(x + 0.1 * w, y + 0.1 * h, w * 0.3, h * 0.8);
+  }
+
+  getDescription(): Map<string, string> {
+    return new Map([
+      ...super.getDescription().entries(),
+      ['Effect', '+1 AP'],
+    ]);
+  }
+
+  applyStartOfRoundEffects(state: State): State {
+    const stats = new Map(state.stats);
+    const oldAp = stats.get('ap') ?? 0;
+    stats.set('ap', oldAp + 1);
+    return {
+      ...state,
+      stats,
+    }
   }
 }
