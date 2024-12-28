@@ -219,6 +219,7 @@ function Card({
         style={{backgroundImage: `url(${card.imageUrl})` }}
       />
     )}
+    <div>{card.getDescription()}</div>
   </div>;
 }
 

@@ -12,6 +12,8 @@ export abstract class BaseCard {
   }
 
   abstract effect(state: State): State;
+
+  abstract getDescription(): string;
 }
 
 export class HousingDevelopmentInitiativeCard extends BaseCard {
@@ -26,6 +28,10 @@ export class HousingDevelopmentInitiativeCard extends BaseCard {
       this.id
     );
   }
+
+  getDescription(): string {
+    return 'Place a residential tile. Maintenance $1,000/month';
+  }
 }
 
 export class ExpandMunicipalCharter extends BaseCard {
@@ -39,5 +45,9 @@ export class ExpandMunicipalCharter extends BaseCard {
       state,
       this.id
     );
+  }
+
+  getDescription(): string {
+    return 'Expand the bureaucratic capacity of city hall. +1 to generated AP.';
   }
 }

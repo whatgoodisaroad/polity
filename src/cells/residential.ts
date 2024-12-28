@@ -8,6 +8,7 @@ type Dwelling = {
 
 export class ResidentialCell extends MapCell {
   dwellings: Dwelling[];
+  maintenanceCost = 5_000;
   
   constructor(
     row: number,
@@ -113,15 +114,19 @@ export class ResidentialCell extends MapCell {
       ['Type', this.type],
       ['Lots', `${this.getLotCount()}`],
       ['Dwellings', `${this.dwellings.length}`],
-      ['Total Property Value', `${this.getTotalPropertyValue()}`],
+      ['Total Property Value', `\$${this.getTotalPropertyValue()}`],
+      ['Monthly maintenance', `\$${this.maintenanceCost}`],
     ]);
   }
 
   applyStartOfRoundEffects(state: State): State {
     const residentialTaxRate = getStatValue(state, 'residentialTaxRate');
-    state = modifyStat(state, 'money', (value) => value + Math.floor(
-      this.getTotalPropertyValue() * residentialTaxRate / 12
-    ));
+    state = modifyStat(state, 'money', (value) => {
+      const taxRevinue = Math.floor(
+        this.getTotalPropertyValue() * residentialTaxRate / 12
+      );  
+      return value + taxRevinue - this.maintenanceCost;
+    });
     
     const map = state.map.filter(
       ({ row, column}) => row !== this.row || column !== this.column
