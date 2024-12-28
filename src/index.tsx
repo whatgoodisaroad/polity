@@ -1,11 +1,11 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { applyStartOfRoundEffects, getCell, getGrid, getInitialState, getNeighbors, placeTile } from './game';
+import { applyStartOfRoundEffects, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
 import { CellType, PaintPass } from './cells/base';
 import { BaseCard } from './card';
 
 function Game(): React.ReactNode {
-  const [state, setState] = useState(applyStartOfRoundEffects(getInitialState()));
+  const [state, setState] = useState(() => applyStartOfRoundEffects(getInitialState()));
   const [zoom, setZoom] = useState(8);
   const [centerRow, setCenterRow] = useState(0);
   const [centerColumn, setCenterColumn] = useState(0);
@@ -104,28 +104,6 @@ function Game(): React.ReactNode {
       }}
     />
     <Row>
-      <ul
-        className="tile-bank"
-        onClick={(e) => {
-          const target = e.target as HTMLTableCellElement;
-          if (!target.classList.contains('tile-bank-entry')) {
-            return;
-          }
-          const type = target.dataset.type as CellType;
-          setState({ ...state, paintTile: type });
-        }}
-      >
-        {[...state.tiles.entries()].map(([type, count], i) => {
-          const selected = state.paintTile === type;
-          return <li
-            className="tile-bank-entry"
-            data-type={type}
-            key={`tile-bank-entry-${type}-${i}`}
-          >
-            {selected ? '* ' : ''}{type}: {count}
-          </li>
-        })}
-      </ul>
       <div>
         <button onClick={zoomOut}>-</button>
         <button onClick={zoomIn}>+</button>
@@ -140,7 +118,7 @@ function Game(): React.ReactNode {
           <table>
             <tbody>
               {[...hoverCell.getDescription().entries()].map(([key, value]) => (
-                <tr>
+                <tr key={key}>
                   <td>{key}:</td>
                   <td>{value}</td>
                 </tr>
@@ -165,7 +143,12 @@ function Game(): React.ReactNode {
       </div>
     </Row>
     <div>
-      <Hand hand={state.hand} />
+      <Hand
+        hand={state.hand}
+        onCardClick={(card) => {
+          setState(card.effect(state));
+        }}
+      />
     </div>
   </div>;
 }
@@ -178,7 +161,13 @@ function Row({ children }: { children: React.ReactNode }): React.ReactNode {
   );
 }
 
-function Hand({ hand }: { hand: BaseCard[] }): React.ReactNode {
+function Hand({
+  hand,
+  onCardClick
+}: {
+  hand: BaseCard[];
+  onCardClick: (card: BaseCard) => void;
+}): React.ReactNode {
   const handRef = useRef<HTMLDivElement>(null);
   const maxAngle = 10;
   const maxOffset = 30;
@@ -197,18 +186,32 @@ function Hand({ hand }: { hand: BaseCard[] }): React.ReactNode {
         `transform: rotate(${-angle}deg) translateY(${offset}px);`
       );
     });
-  }, hand);
-
+  }, [hand.map(({ id }) => id).join('-')]);
 
   return (
     <div className="hand" ref={handRef}>
-      {hand.map((card) => <Card card={card} />)}
+      {hand.map((card) => (
+        <Card
+          key={card.id}
+          card={card}
+          onClick={onCardClick}
+        />
+      ))}
     </div>
   );
 }
 
-function Card({ card }: { card: BaseCard }): React.ReactNode {
-  return <div className="card">
+function Card({
+  card,
+  onClick,
+}: {
+  card: BaseCard;
+  onClick: (card: BaseCard) => void;
+}): React.ReactNode {
+  return <div
+    className="card"
+    onClick={() => onClick(card)}
+  >
     <div className="card-title">{card.name}</div>
     {card.imageUrl && (
       <div

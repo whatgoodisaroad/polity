@@ -14,7 +14,6 @@ export type StatKey = 'money' | 'ap' | 'residentialTaxRate';
 
 export type State = {
   map: MapCell[];
-  tiles: Map<CellType, number>;
   paintTile?: CellType;
   log: string[];
   stats: Map<StatKey, Stat>;
@@ -93,10 +92,7 @@ export function getInitialState(): State {
   }  
   return {
     map,
-    tiles: new Map([
-      ['residential', 100],
-    ]),
-    log: ['Welcome!'],
+    log: [],
     stats: new Map(),
     hand: [],
     deck: [
@@ -175,36 +171,21 @@ export function placeTile(
     };
   }
 
-  const tileCount = state.tiles.get(type) ?? 0;
-  const newTiles = new Map([...state.tiles]);
   const newMap = [
     ...state.map.filter((cell) => cell.row !== row || cell.column !== column),
   ];
-  let paintTile: CellType | undefined = state.paintTile;
   const newLog = [...state.log];
 
-  if (tileCount <= 0) {
-    newTiles.delete(type);
-  } else {
-    const newTileCount = tileCount - 1;
-    if (newTileCount <= 0) {
-      newTiles.delete(type);
-      paintTile = undefined;
-    } else {
-      newTiles.set(type, newTileCount);
-    }
-
-    if (type === 'freeway-corridoor') {
-      newMap.push(new FreewayCorridorCell(row, column));
-    } else if (type === 'residential') {
-      newMap.push(new ResidentialCell(row, column));
-    }
+  if (type === 'freeway-corridoor') {
+    newMap.push(new FreewayCorridorCell(row, column));
+  } else if (type === 'residential') {
+    newMap.push(new ResidentialCell(row, column));
   }
+  
   return {
     ...state,
     map: newMap,
-    tiles: newTiles,
-    paintTile,
+    paintTile: undefined,
     log: newLog,
   };
 }
@@ -227,6 +208,7 @@ export function applyStartOfRoundEffects(state: State): State {
       deck = discard;
       discard = [];
     }
+    console.log('drawing', deck[0]);
     hand.push(deck[0]);
     deck = deck.slice(1);
   }
@@ -236,5 +218,12 @@ export function applyStartOfRoundEffects(state: State): State {
     hand,
     deck,
     discard,
+  };
+}
+
+export function removeCardIdFromHand(state: State, cardId: string): State {
+  return {
+    ...state,
+    hand: state.hand.filter(({ id }) => id !== cardId),
   };
 }

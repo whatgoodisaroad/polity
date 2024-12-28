@@ -3,20 +3,10 @@ body {
   margin: 0;
   padding: 0;
 }
-.tile-bank {
-  margin-bottom: 20px;
-}
-.tile-bank .tile-bank-entry {
-  cursor: pointer;
-}
-.tile-bank .tile-bank-entry:hover {
-  outline: 1px solid black;
-}
 .row {
   display: flex;
   flex-direction: row;
 }
-
 .card {
   width: 200px;
   height: 300px;
@@ -52,4 +42,5 @@ body {
 }
 .hand .card:hover {
   transform: rotate(0) translateY(-30px) !important;
+  z-index: 1;
 }
