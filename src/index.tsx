@@ -85,48 +85,25 @@ function Game(): React.ReactNode {
   }, [state.map, zoom, centerRow, centerColumn, hover?.row, hover?.column]);
 
   return <div>
-    <canvas
-      ref={canvasRef}
-      height={canvasHeight}
-      width={canvasWidth}
-      onClick={(e) => {
-        if (!state.paintTile) {
-          return;
-        }
-        const { offsetX, offsetY } = e.nativeEvent;
-        const { row, column } = offsetToCoord(offsetX, offsetY);
-        setState(placeTile(state, state.paintTile, row, column));
-      }}
-      onMouseMove={(e) => {
-        const { offsetX, offsetY } = e.nativeEvent;
-        const { row, column } = offsetToCoord(offsetX, offsetY);
-        setHover({ row, column });
-      }}
-    />
     <Row>
-      <div>
-        <button onClick={zoomOut}>-</button>
-        <button onClick={zoomIn}>+</button>
-        <button onClick={moveUp}>⬆</button>
-        <button onClick={moveDown}>⬇</button>
-        <button onClick={moveLeft}>⬅</button>
-        <button onClick={moveRight}>⮕</button>
-        <button onClick={endTurn}>End Turn</button>
-      </div>
-      <div>
-        {hoverCell && <>
-          <table>
-            <tbody>
-              {[...hoverCell.getDescription().entries()].map(([key, value]) => (
-                <tr key={key}>
-                  <td>{key}:</td>
-                  <td>{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>}
-      </div>
+      <canvas
+        ref={canvasRef}
+        height={canvasHeight}
+        width={canvasWidth}
+        onClick={(e) => {
+          if (!state.paintTile) {
+            return;
+          }
+          const { offsetX, offsetY } = e.nativeEvent;
+          const { row, column } = offsetToCoord(offsetX, offsetY);
+          setState(placeTile(state, state.paintTile, row, column));
+        }}
+        onMouseMove={(e) => {
+          const { offsetX, offsetY } = e.nativeEvent;
+          const { row, column } = offsetToCoord(offsetX, offsetY);
+          setHover({ row, column });
+        }}
+      />
       <div>
         <table>
           <tbody>
@@ -140,6 +117,29 @@ function Game(): React.ReactNode {
             ))}
           </tbody>
         </table>
+        {hoverCell && <>
+          <table>
+            <tbody>
+              {[...hoverCell.getDescription().entries()].map(([key, value]) => (
+                <tr key={key}>
+                  <td>{key}:</td>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>}
+      </div>
+    </Row>
+    <Row>
+      <div>
+        <button onClick={zoomOut}>-</button>
+        <button onClick={zoomIn}>+</button>
+        <button onClick={moveUp}>⬆</button>
+        <button onClick={moveDown}>⬇</button>
+        <button onClick={moveLeft}>⬅</button>
+        <button onClick={moveRight}>⮕</button>
+        <button onClick={endTurn}>End Turn</button>
       </div>
     </Row>
     <div>

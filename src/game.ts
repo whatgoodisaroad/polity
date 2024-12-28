@@ -79,8 +79,8 @@ function initStat(key: StatKey): Stat {
 
 export function getInitialState(): State { 
   const map: MapCell[] = [];
-  for (let row = -5; row <= 5; row++) {
-    for (let column = -5; column <= 5; column++) {
+  for (let row = -10; row <= 10; row++) {
+    for (let column = -10; column <= 10; column++) {
       if (row === 0 && column === 3) {
         map.push( new CityHallCell(row, column));
       } else if (column === 0) {
