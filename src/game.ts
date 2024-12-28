@@ -192,38 +192,49 @@ export function placeTile(
 
 const HAND_SIZE = 5;
 
-export function applyStartOfRoundEffects(state: State): State {
-  let newState = { ...state, };
-  for (const cell of state.map) {
-    newState = cell.applyStartOfRoundEffects(newState);
-  }
-
-  let hand = [ ...state.hand ];
+export function draw(state: State): State {
+  let hand = [];
   let deck = [ ...state.deck ];
   let discard = [ ...state.discard ];
 
-  discard.push(...hand);
+  if (state.hand.length > 0) {
+    discard.push(...state.hand);
+  }
+
   while (hand.length < HAND_SIZE) {
     if (deck.length === 0) {
       deck = discard;
       discard = [];
     }
-    console.log('drawing', deck[0]);
     hand.push(deck[0]);
     deck = deck.slice(1);
   }
-
   return {
-    ...newState,
+    ...state,
     hand,
     deck,
     discard,
   };
 }
 
-export function removeCardIdFromHand(state: State, cardId: string): State {
+export function applyStartOfRoundEffects(state: State): State {
+  let newState = { ...state, };
+  for (const cell of state.map) {
+    newState = cell.applyStartOfRoundEffects(newState);
+  }
+
+  return draw({ ...newState });
+}
+
+export function discardHandCardById(state: State, cardId: string): State {
+  const index = state.hand.findIndex(({ id }) => id === cardId);
+  if (index === -1) {
+    return state;
+  }
+  
   return {
     ...state,
     hand: state.hand.filter(({ id }) => id !== cardId),
+    discard: [...state.discard, state.hand[index] ],
   };
 }

@@ -1,11 +1,11 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { applyStartOfRoundEffects, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
+import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
 import { CellType, PaintPass } from './cells/base';
 import { BaseCard } from './card';
 
 function Game(): React.ReactNode {
-  const [state, setState] = useState(() => applyStartOfRoundEffects(getInitialState()));
+  const [state, setState] = useState(() => draw(getInitialState()));
   const [zoom, setZoom] = useState(8);
   const [centerRow, setCenterRow] = useState(0);
   const [centerColumn, setCenterColumn] = useState(0);

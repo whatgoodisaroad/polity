@@ -1,4 +1,4 @@
-import { removeCardIdFromHand, State } from "./game";
+import { discardHandCardById, State } from "./game";
 import { v4 as uuid } from 'uuid';
 
 export abstract class BaseCard {
@@ -21,7 +21,7 @@ export class HousingDevelopmentInitiativeCard extends BaseCard {
   }
 
   effect(state: State): State {
-    return removeCardIdFromHand(
+    return discardHandCardById(
       { ...state, paintTile: 'residential' },
       this.id
     );
@@ -35,7 +35,7 @@ export class ExpandMunicipalCharter extends BaseCard {
   }
 
   effect(state: State): State {
-    return removeCardIdFromHand(
+    return discardHandCardById(
       state,
       this.id
     );
