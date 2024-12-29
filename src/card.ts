@@ -27,7 +27,7 @@ export abstract class BaseCard {
 export class HousingDevelopmentInitiativeCard extends BaseCard {
   constructor() {
     super('Housing Development Initiative');
-    this.imageUrl = '/img/HousingDevelopmentInitiative.png';
+    this.imageUrl = 'img/HousingDevelopmentInitiative.png';
     this.apCost = 2;
   }
 
@@ -48,7 +48,7 @@ export class HousingDevelopmentInitiativeCard extends BaseCard {
 export class ExpandMunicipalCharter extends BaseCard {
   constructor() {
     super('Expand Municipal Charter');
-    this.imageUrl = '/img/MunicipalBondIssuance.jpeg';
+    this.imageUrl = 'img/MunicipalBondIssuance.jpeg';
     this.apCost = 5;
   }
 
@@ -69,7 +69,7 @@ export class ExpandMunicipalCharter extends BaseCard {
 export class ParksAndRecreationCard extends BaseCard {
   constructor() {
     super('Parks & Rec Project');
-    this.imageUrl = '/img/Park.jpeg';
+    this.imageUrl = 'img/Park.jpeg';
     this.apCost = 3;
   }
 
