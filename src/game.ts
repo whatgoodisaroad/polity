@@ -69,7 +69,7 @@ export function getStatValue(state: State, key: StatKey): number {
 
 function initStat(key: StatKey): Stat {
   if (key === 'money') {
-    return { value: 0, lifecycle: 'game', display: true };
+    return { value: 10_000, lifecycle: 'game', display: true };
   } else if (key === 'ap') {
     return { value: 4, max: 20, lifecycle: 'game', display: true };
   } else if (key === 'residentialTaxRate') {
@@ -94,7 +94,10 @@ export function getInitialState(): State {
   return {
     map,
     log: [],
-    stats: new Map([['ap', initStat('ap')]]),
+    stats: new Map([
+      ['ap', initStat('ap')],
+      ['money', initStat('money')],
+    ]),
     hand: [],
     deck: [
       new ParksAndRecreationCard(),

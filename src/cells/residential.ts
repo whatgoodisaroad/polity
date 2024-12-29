@@ -58,6 +58,7 @@ export class ResidentialCell extends MapCell {
     context.fillStyle = Color.developed;
     context.fillRect(x, y, w, h);
 
+    context.beginPath();
     context.strokeStyle = Color.road;
     context.lineWidth = w * 0.005;
     
@@ -94,6 +95,8 @@ export class ResidentialCell extends MapCell {
     context.moveTo(x + 0.65 * w, y + 0.5 * h);
     context.lineTo(x + 0.85 * w, y + 0.5 * h);
     context.stroke();
+
+    context.closePath();
 
     // Dwellings
     for (const { coordinateIndex } of this.dwellings) {
