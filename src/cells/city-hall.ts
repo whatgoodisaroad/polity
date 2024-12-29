@@ -2,8 +2,11 @@ import { modifyStat, State } from "../game";
 import { Color, MapCell, PaintArgs } from "./base";
 
 export class CityHallCell extends MapCell {
-  constructor(row: number, column: number) {
+  level: number;
+
+  constructor(row: number, column: number, level: number = 1) {
     super('city-hall', row, column);
+    this.level = level;
   }
   
   paint({ context, x, y, w, h, pass }: PaintArgs) {
@@ -28,11 +31,16 @@ export class CityHallCell extends MapCell {
   getDescription(): Map<string, string> {
     return new Map([
       ...super.getDescription().entries(),
-      ['Effect', '+1 AP'],
+      ['Effect', `+${this.level} AP`],
+      ['Level', `${this.level}`],
     ]);
   }
 
   applyStartOfRoundEffects(state: State): State {
-    return modifyStat(state, 'ap', (value) => value + 1);
+    return modifyStat(state, 'ap', (value) => value + this.level);
+  }
+
+  upgrade(): CityHallCell {
+    return new CityHallCell(this.row, this.column, this.level + 1);
   }
 }

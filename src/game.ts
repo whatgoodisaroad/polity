@@ -1,6 +1,7 @@
-import { BaseCard, ExpandMunicipalCharter, HousingDevelopmentInitiativeCard } from "./card";
+import { BaseCard, ExpandMunicipalCharter, HousingDevelopmentInitiativeCard, ParksAndRecreationCard } from "./card";
 import { CityHallCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
 import type { CellType, MapCell } from "./cells/base";
+import { ParkCell } from "./cells/park";
 
 export interface Stat {
   value: number;
@@ -70,7 +71,7 @@ function initStat(key: StatKey): Stat {
   if (key === 'money') {
     return { value: 0, lifecycle: 'game', display: true };
   } else if (key === 'ap') {
-    return { value: 0, max: 10, lifecycle: 'game', display: true };
+    return { value: 4, max: 20, lifecycle: 'game', display: true };
   } else if (key === 'residentialTaxRate') {
     return { value: 0.05, max: 0.5, lifecycle: 'game' };
   }
@@ -93,9 +94,10 @@ export function getInitialState(): State {
   return {
     map,
     log: [],
-    stats: new Map(),
+    stats: new Map([['ap', initStat('ap')]]),
     hand: [],
     deck: [
+      new ParksAndRecreationCard(),
       new ExpandMunicipalCharter(),
       new HousingDevelopmentInitiativeCard(),
       new HousingDevelopmentInitiativeCard(),
@@ -157,6 +159,27 @@ export function getNeighbors(row: number, column: number, state: State): Neighbo
   };
 }
 
+export function findCellByType(state: State, cellType: CellType): MapCell | undefined {
+  return state.map.find(({ type }) => type === cellType);
+}
+
+export function replaceCell(
+  state: State,
+  row: number,
+  column: number,
+  cell: MapCell,
+): State {
+  return {
+    ...state,
+    map: [
+      ...state.map.filter(
+        (cell) => cell.row !== row || cell.column !== column
+      ),
+      cell
+    ],
+  }
+}
+
 export function placeTile(
   state: State,
   type: CellType,
@@ -171,20 +194,27 @@ export function placeTile(
     };
   }
 
-  const newMap = [
-    ...state.map.filter((cell) => cell.row !== row || cell.column !== column),
-  ];
   const newLog = [...state.log];
 
+  let newCell: MapCell | undefined;
   if (type === 'freeway-corridoor') {
-    newMap.push(new FreewayCorridorCell(row, column));
+    newCell = new FreewayCorridorCell(row, column);
   } else if (type === 'residential') {
-    newMap.push(new ResidentialCell(row, column));
+    newCell = new ResidentialCell(row, column);
+  } else if (type === 'park') {
+    newCell = new ParkCell(row, column);
   }
-  
+  if (!newCell) {
+    throw 'Could not place';
+  }
+
   return {
-    ...state,
-    map: newMap,
+    ...replaceCell(
+      state,
+      row,
+      column,
+      newCell,
+    ),
     paintTile: undefined,
     log: newLog,
   };

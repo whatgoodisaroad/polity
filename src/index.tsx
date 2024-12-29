@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
-import { CellType, PaintPass } from './cells/base';
+import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State, StatKey } from './game';
+import { PaintPass } from './cells/base';
 import { BaseCard } from './card';
 
 function Game(): React.ReactNode {
@@ -28,7 +28,19 @@ function Game(): React.ReactNode {
   const moveDown = () => setCenterRow(centerRow + zoom * 0.5);
   const moveLeft = () => setCenterColumn(centerColumn - Math.max(2, Math.floor(aspect * zoom * 0.25)));
   const moveRight = () => setCenterColumn(centerColumn + Math.max(2, Math.floor(aspect * zoom * 0.25)));
-  const endTurn = () => setState(applyStartOfRoundEffects(state));
+  const endTurn = () => {
+    if (state.paintTile) {
+      return;
+    }
+    setState(applyStartOfRoundEffects(state));
+  };
+  const playCard = (card: BaseCard) => {
+    if (!card.canPlay(state)) {
+      alert('Can\'t afford');
+      return;
+    }
+    setState(card.effect(state));
+  };
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasHeight = 600;
@@ -139,16 +151,17 @@ function Game(): React.ReactNode {
         <button onClick={moveDown}>⬇</button>
         <button onClick={moveLeft}>⬅</button>
         <button onClick={moveRight}>⮕</button>
-        <button onClick={endTurn}>End Turn</button>
+        <button onClick={endTurn} disabled={!!state.paintTile}>End Turn</button>
       </div>
     </Row>
     <div>
-      <Hand
-        hand={state.hand}
-        onCardClick={(card) => {
-          setState(card.effect(state));
-        }}
-      />
+      {!state.paintTile && (
+        <Hand
+          hand={state.hand}
+          onCardClick={playCard}
+        />
+      )}
+      {state.paintTile && <h1>Place a {state.paintTile}</h1>}
     </div>
   </div>;
 }
@@ -212,7 +225,10 @@ function Card({
     className="card"
     onClick={() => onClick(card)}
   >
-    <div className="card-title">{card.name}</div>
+    <div className="card-title">
+      {card.name}{' '}
+      <Badge value={card.apCost} type="ap" />
+    </div>
     {card.imageUrl && (
       <div
         className="card-image"
@@ -221,6 +237,10 @@ function Card({
     )}
     <div>{card.getDescription()}</div>
   </div>;
+}
+
+function Badge({ value, type }: { value: number; type: StatKey }): React.ReactNode {
+  return <span className={`badge ${type}`}>{value}</span>;
 }
 
 const root = createRoot(document.getElementById('container')!);

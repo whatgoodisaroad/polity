@@ -8,17 +8,16 @@ export const Color = {
   developed: '#e6e6e6',
   road: '#fff',
   soil: '#e8be99',
+  park: '#d2e3a6',
+  parkPath: '#80db4b',
 };
 
 export type CellType =
   | 'empty'
   | 'city-hall'
   | 'residential'
-  | 'industrial'
-  | 'commercial'
   | 'freeway-corridoor'
-  | 'commercial-corridor'
-  | 'service-road'
+  | 'park'
   | 'void';
 
 export type PaintPass = 0 | 1;

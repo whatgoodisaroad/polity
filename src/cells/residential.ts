@@ -8,7 +8,6 @@ type Dwelling = {
 
 export class ResidentialCell extends MapCell {
   dwellings: Dwelling[];
-  maintenanceCost = 5_000;
   
   constructor(
     row: number,
@@ -45,6 +44,10 @@ export class ResidentialCell extends MapCell {
         },
       ]
     );
+  }
+
+  getMaintenanceCost(): number {
+    return 1_000 + 500 * this.dwellings.length;
   }
   
   paint(args: PaintArgs): void {
@@ -115,7 +118,7 @@ export class ResidentialCell extends MapCell {
       ['Lots', `${this.getLotCount()}`],
       ['Dwellings', `${this.dwellings.length}`],
       ['Total Property Value', `\$${this.getTotalPropertyValue()}`],
-      ['Monthly maintenance', `\$${this.maintenanceCost}`],
+      ['Monthly maintenance', `\$${this.getMaintenanceCost()}`],
     ]);
   }
 
@@ -125,7 +128,7 @@ export class ResidentialCell extends MapCell {
       const taxRevinue = Math.floor(
         this.getTotalPropertyValue() * residentialTaxRate / 12
       );  
-      return value + taxRevinue - this.maintenanceCost;
+      return value + taxRevinue - this.getMaintenanceCost();
     });
     
     const map = state.map.filter(

@@ -44,3 +44,17 @@ body {
   transform: rotate(0) translateY(-30px) !important;
   z-index: 1;
 }
+
+.badge {
+  border-radius: 6px;
+  font-size: 10px;
+  display: inline-block;
+  padding: 4px;
+}
+.badge.ap {
+  background-color: darkblue;
+  color: #fff;
+}
+.badge.ap::before {
+  content: 'AP ';
+}
