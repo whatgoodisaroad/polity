@@ -1,4 +1,5 @@
-import { getStatValue, modifyStat, State } from "../game";
+import { State } from "../game";
+import { getStatValue, modifyStat } from "../stats";
 import { Color, MapCell, PaintArgs } from "./base";
 
 type Dwelling = {

@@ -1,4 +1,5 @@
-import { modifyStat, State } from "../game";
+import { State } from "../game";
+import { modifyStat } from "../stats";
 import { Color, MapCell, PaintArgs } from "./base";
 
 export class CityHallCell extends MapCell {

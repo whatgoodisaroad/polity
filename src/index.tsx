@@ -1,8 +1,9 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State, StatKey } from './game';
+import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile } from './game';
 import { PaintPass } from './cells/base';
 import { BaseCard } from './card';
+import { StatKey } from './stats';
 
 function Game(): React.ReactNode {
   const [state, setState] = useState(() => draw(getInitialState()));

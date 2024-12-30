@@ -1,6 +1,7 @@
 import { CityHallCell } from "./cells";
-import { discardHandCardById, findCellByType, getStatValue, modifyStat, replaceCell, State } from "./game";
+import { discardHandCardById, findCellByType, replaceCell, State } from "./game";
 import { v4 as uuid } from 'uuid';
+import { getStatValue, modifyStat } from "./stats";
 
 export abstract class BaseCard {
   id: string;
