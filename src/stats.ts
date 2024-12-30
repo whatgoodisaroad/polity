@@ -8,7 +8,10 @@ export interface Stat {
   max?: number;
 }
 
-export type StatKey = 'money' | 'ap' | 'residentialTaxRate';
+export type StatKey =
+  | 'money'
+  | 'ap'
+  | 'residentialTaxRate';
 
 export function modifyStat(
   state: State,
@@ -23,6 +26,7 @@ export function modifyStat(
   if (!stat) {
     throw `Failed to get stat ${key}`;
   }
+  stat = { ...stat };
 
   stat.value = fn(stat.value);
   if (stat.max && stat.value > stat.max) {

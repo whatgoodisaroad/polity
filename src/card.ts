@@ -15,7 +15,14 @@ export abstract class BaseCard {
   }
 
   effect(state: State): State {
-    return modifyStat(state, 'ap', (ap) => ap - this.apCost);
+    return  discardHandCardById(
+      modifyStat(
+        state,
+        'ap',
+        (ap) => ap - this.apCost
+      ),
+      this.id
+    );
   }
 
   abstract getDescription(): string;
@@ -33,12 +40,7 @@ export class HousingDevelopmentInitiativeCard extends BaseCard {
   }
 
   effect(state: State): State {
-    return discardHandCardById(
-      super.effect(
-        { ...state, paintTile: 'residential' }
-      ),
-      this.id
-    );
+    return super.effect({ ...state, paintTile: 'residential' });
   }
 
   getDescription(): string {
@@ -54,7 +56,7 @@ export class ExpandMunicipalCharter extends BaseCard {
   }
 
   effect(state: State): State {
-    state = discardHandCardById(super.effect(state), this.id)
+    state = super.effect(state);
     const cityHall = findCellByType(state, 'city-hall') as CityHallCell;;
     if (cityHall) {
       state = replaceCell(state, cityHall.row, cityHall.column, cityHall.upgrade());
@@ -75,15 +77,54 @@ export class ParksAndRecreationCard extends BaseCard {
   }
 
   effect(state: State): State {
-    return discardHandCardById(
-      super.effect(
-        { ...state, paintTile: 'park' }
-      ),
-      this.id
-    );
+    return super.effect({ ...state, paintTile: 'park' });
   }
 
   getDescription(): string {
     return 'Place a park cell';
+  }
+}
+
+export class ResidentialTaxAdjustmentCard extends BaseCard {
+  constructor() {
+    super('Residential Tax Adjustnment');
+    this.imageUrl = 'img/ResidentialTaxAdjustment.jpeg';
+    this.apCost = 3;
+  }
+
+  effect(state: State): State {
+    return super.effect(
+      modifyStat(
+        state,
+        'residentialTaxRate',
+        (value) => value * 1.05
+      )
+    );
+  }
+
+  getDescription(): string {
+    return 'Increase residential taxes +5%';
+  }
+}
+
+export class ParadeCard extends BaseCard {
+  constructor() {
+    super('Parade');
+    this.imageUrl = 'img/Parade.jpeg';
+    this.apCost = 5;
+  }
+
+  effect(state: State): State {
+    return super.effect(
+      modifyStat(
+        state,
+        'ap',
+        (value) => value + 10
+      )
+    );
+  }
+
+  getDescription(): string {
+    return 'Throw a parade for the town. +10 AP';
   }
 }

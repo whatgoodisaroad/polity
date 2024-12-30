@@ -120,7 +120,7 @@ function Game(): React.ReactNode {
       <div>
         <table>
           <tbody>
-            {[...state.stats.entries()].map(([key, value]) => (
+            {[...state.stats.entries()].filter(([, { display }]) => display).map(([key, value]) => (
               <tr key={key}>
                 <td>{value.displayName ?? key}:</td>
                 <td>

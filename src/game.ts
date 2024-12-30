@@ -1,4 +1,4 @@
-import { BaseCard, ExpandMunicipalCharter, HousingDevelopmentInitiativeCard, ParksAndRecreationCard } from "./card";
+import { BaseCard, ParadeCard, ExpandMunicipalCharter, HousingDevelopmentInitiativeCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard } from "./card";
 import { CityHallCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
 import type { CellType, MapCell } from "./cells/base";
 import { ParkCell } from "./cells/park";
@@ -45,6 +45,8 @@ export function getInitialState(): State {
     deck: [
       new ParksAndRecreationCard(),
       new ExpandMunicipalCharter(),
+      new ResidentialTaxAdjustmentCard(),
+      new ParadeCard(),
       new HousingDevelopmentInitiativeCard(),
       new HousingDevelopmentInitiativeCard(),
       new HousingDevelopmentInitiativeCard(),
