@@ -181,7 +181,7 @@ export function draw(state: State): State {
 
   while (hand.length < HAND_SIZE) {
     if (deck.length === 0) {
-      deck = discard;
+      deck = shuffle(discard);
       discard = [];
     }
     hand.push(deck[0]);
@@ -193,6 +193,13 @@ export function draw(state: State): State {
     deck,
     discard,
   };
+}
+
+function shuffle<T>(a: T[]): T[] {
+  return a
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
 }
 
 export function applyStartOfRoundEffects(state: State): State {

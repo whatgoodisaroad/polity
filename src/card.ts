@@ -115,12 +115,10 @@ export class ParadeCard extends BaseCard {
   }
 
   effect(state: State): State {
-    return super.effect(
-      modifyStat(
-        state,
-        'ap',
-        (value) => value + 10
-      )
+    return modifyStat(
+      super.effect(state),
+      'ap',
+      (value) => value + 10
     );
   }
 
