@@ -55,6 +55,34 @@ body {
   background-color: darkblue;
   color: #fff;
 }
+.badge.money {
+  background-color: gold;
+  color: #000;
+}
+.badge.residentialApplications {
+  background-color: green;
+  color: #fff;
+}
+.badge.commercialApplications {
+  background-color: blue;
+  color: #fff;
+}
+.badge.industrialApplications {
+  background-color: yellow;
+  color: #000;
+}
 .badge.ap::before {
   content: 'AP ';
+}
+.badge.badge.money::before {
+  content: 'GP ';
+}
+.badge.residentialApplications::before {
+  content: 'Res ';
+}
+.badge.commercialApplications::before {
+  content: 'Com ';
+}
+.badge.industrialApplications::before {
+  content: 'Ind ';
 }
