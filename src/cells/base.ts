@@ -82,3 +82,18 @@ export function neighborToCoords(
     return { x, y };
   }
 }
+
+export function drawBuilding(
+  { context, x, y, w, h, pass }: PaintArgs,
+  { rx, ry, rw, rh }: { rx: number, ry: number, rw: number, rh: number },
+  zone: 'commercial' | 'other' = 'other',
+) {
+  context.strokeStyle = Color.buildingBorder;
+  context.lineWidth = w * 0.005;
+
+  context.fillStyle = zone === 'commercial'
+    ? Color.commercialBuildingFill
+    : Color.buildingFill;
+  context.fillRect(x + rx * w, y + ry * h, w * rw, h * rh);
+  context.strokeRect(x + rx * w, y + ry * h, w * rw, h * rh);
+}

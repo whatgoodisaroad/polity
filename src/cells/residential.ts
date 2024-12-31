@@ -1,6 +1,6 @@
 import { replaceCell, State } from "../game";
 import { getStatValue, modifyStat } from "../stats";
-import { Color, MapCell, PaintArgs } from "./base";
+import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
 
 type Dwelling = {
   propertyValue: number;
@@ -105,8 +105,8 @@ export class ResidentialCell extends MapCell {
 
     // Dwellings
     for (const { coordinateIndex } of this.dwellings) {
-      const [x, y, w, h] = HOUSE_COORDINATES[coordinateIndex];
-      drawHouse(x, y, w, h, args);
+      const [rx, ry, rw, rh] = HOUSE_COORDINATES[coordinateIndex];
+      drawBuilding(args, { rx, ry, rw, rh });
     }
   }
 
@@ -158,32 +158,6 @@ export class ResidentialCell extends MapCell {
 
     return state;
   }
-}
-
-function drawHouse(
-  buildingX: number,
-  buildingY: number,
-  buildingWidth: number,
-  buildingHeight: number,
-  {
-    x,
-    y,
-    w,
-    h,
-    context,
-  }: PaintArgs,
-): void {
-  context.strokeStyle = Color.buildingBorder;
-  context.lineWidth = w * 0.005;
-
-  const halfWidth = buildingWidth * 0.5;
-  const halfHeight = buildingHeight * 0.5;
-  const x1 = x + (buildingX * w) - halfWidth * w;
-  const y1 = y + (buildingY * h) - halfHeight * h;
-
-  context.fillStyle = Color.buildingFill;
-  context.fillRect(x1, y1, buildingWidth * w, buildingHeight * h);
-  context.strokeRect(x1, y1, buildingWidth * w, buildingHeight * h);
 }
 
 const HOUSE_COORDINATES = [

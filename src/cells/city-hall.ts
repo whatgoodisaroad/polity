@@ -1,6 +1,6 @@
 import { State } from "../game";
 import { modifyStat } from "../stats";
-import { Color, MapCell, PaintArgs } from "./base";
+import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
 
 export class CityHallCell extends MapCell {
   level: number;
@@ -10,23 +10,16 @@ export class CityHallCell extends MapCell {
     this.level = level;
   }
   
-  paint({ context, x, y, w, h, pass }: PaintArgs) {
+  paint(args: PaintArgs) {
+    const { context, x, y, w, h, pass } = args;
     if (pass !== 0) {
       return;
     }
     context.fillStyle = Color.developed;
     context.fillRect(x, y, w, h);
 
-    context.strokeStyle = Color.buildingBorder;
-    context.lineWidth = w * 0.005;
-
-    context.fillStyle = Color.buildingFill;
-    context.fillRect(x + 0.4 * w, y + 0.1 * h, w * 0.5, h * 0.7);
-    context.strokeRect(x + 0.4 * w, y + 0.1 * h, w * 0.5, h * 0.7);
-
-    context.fillStyle = Color.commercialBuildingFill;
-    context.fillRect(x + 0.1 * w, y + 0.1 * h, w * 0.3, h * 0.8);
-    context.strokeRect(x + 0.1 * w, y + 0.1 * h, w * 0.3, h * 0.8);
+    drawBuilding(args, { rx: 0.4, ry: 0.1, rw: 0.5, rh: 0.7 });
+    drawBuilding(args, { rx: 0.1, ry: 0.1, rw: 0.3, rh: 0.8 }, 'commercial');
   }
 
   getDescription(): Map<string, string> {
