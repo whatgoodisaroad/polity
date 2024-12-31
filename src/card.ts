@@ -35,8 +35,6 @@ export abstract class BaseCard {
 }
 
 export class ApproveHousingCard extends BaseCard {
-  residentialApplicationCost = 1;
-  
   constructor() {
     super('Approve Housing');
     this.imageUrl = 'img/HousingDevelopmentInitiative.png';
@@ -47,23 +45,11 @@ export class ApproveHousingCard extends BaseCard {
   }
 
   effect(state: State): State {
-    return modifyStat(
-      super.effect({ ...state, paintTile: 'residential' }),
-      'residentialApplications',
-      (ap) => ap - this.residentialApplicationCost
-    );
+    return super.effect({ ...state, paintTile: 'residential' });
   }
 
   getDescription(): string {
     return 'Place a residential tile.';
-  }
-
-  canPlay(state: State): boolean {
-    if (!super.canPlay(state)) {
-      return false;
-    }
-    const apps = getStatValue(state, 'residentialApplications');
-    return apps >= this.residentialApplicationCost;
   }
 }
 

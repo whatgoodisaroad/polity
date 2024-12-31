@@ -64,6 +64,13 @@ export class CommetcialCorridorCell extends MapCell {
           drawBuilding(args, { rx: rx + 0.5, ry, rw, rh }, 'commercial');
         }  
       }
+
+      if (connections.includes('s') && connections.includes('e')) {
+        for (const [rx, ry, rw, rh] of cluster) {
+          console.log(connections, [rx, ry, rw, rh]);
+          drawBuilding(args, { rx: rx + 0.5, ry: ry + 0.5, rw, rh }, 'commercial');
+        }  
+      }
     }
 
     // if (connections.length === 0) {

@@ -146,13 +146,13 @@ export class ResidentialCell extends MapCell {
     }
 
     // Maybe engage in entrepeneurialism
-    if (Math.random() >= this.addResidentialApplicationProbability) {
+    if (Math.random() <= this.addResidentialApplicationProbability) {
       state = modifyStat(state, 'residentialApplications', (value) => value + 1);
     }
-    if (Math.random() >= this.addCommercialApplicationProbability) {
+    if (Math.random() <= this.addCommercialApplicationProbability) {
       state = modifyStat(state, 'commercialApplications', (value) => value + 1);
     }
-    if (Math.random() >= this.addIndustrialApplicationProbability) {
+    if (Math.random() <= this.addIndustrialApplicationProbability) {
       state = modifyStat(state, 'industrialApplications', (value) => value + 1);
     }
 
