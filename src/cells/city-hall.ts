@@ -18,8 +18,35 @@ export class CityHallCell extends MapCell {
     context.fillStyle = Color.developed;
     context.fillRect(x, y, w, h);
 
-    drawBuilding(args, { rx: 0.4, ry: 0.1, rw: 0.5, rh: 0.7 });
-    drawBuilding(args, { rx: 0.1, ry: 0.1, rw: 0.3, rh: 0.8 }, 'commercial');
+    // Lawn:
+    context.fillStyle = Color.park;
+    context.fillRect(x + 0.45 * w, y + 0.05 * h, 0.5 * w, 0.9 * h);
+
+    // Paths:
+    context.beginPath();
+    context.strokeStyle = Color.road;
+    context.lineWidth = 0.02 * w;
+
+    context.moveTo(x + 0.45 * w, y + 0.5 * h);
+    context.lineTo(x + 0.95 * w, y + 0.05 * h);
+    context.stroke();
+
+    context.moveTo(x + 0.45 * w, y + 0.5 * h);
+    context.lineTo(x + 0.95 * w, y + 0.5 * h);
+    context.stroke();
+
+    context.moveTo(x + 0.45 * w, y + 0.5 * h);
+    context.lineTo(x + 0.95 * w, y + 0.9 * h);
+    context.stroke();
+
+    if (this.level > 5) {
+      drawBuilding(args, { rx: 0.05, ry: 0.05, rw: 0.7, rh: 0.2 });
+      drawBuilding(args, { rx: 0.05, ry: 0.75, rw: 0.7, rh: 0.2 });  
+    }
+    if (this.level > 3) {
+      drawBuilding(args, { rx: 0.05, ry: 0.05, rw: 0.3, rh: 0.9 });  
+    }
+    drawBuilding(args, { rx: 0.1, ry: 0.4, rw: 0.3, rh: 0.2 });
   }
 
   getDescription(): Map<string, string> {

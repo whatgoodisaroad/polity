@@ -20,6 +20,7 @@ export class ParkCell extends MapCell {
     context.fillRect(x + 0.15 * w, y + 0.05 * h, 0.8 * w, 0.9 * h);
     context.fillRect(x + 0.05 * w, y + 0.05 * h, 0.1 * w, 0.5 * h);
 
+    // Paths:
     context.beginPath();
     context.strokeStyle = Color.road;
     context.lineWidth = 0.02 * w;
@@ -37,7 +38,6 @@ export class ParkCell extends MapCell {
     context.stroke();
 
     context.closePath();
-
   }
 
   applyStartOfRoundEffects(state: State): State {
