@@ -45,10 +45,7 @@ export class CommetcialCorridorCell extends MapCell {
       }
     } else {
       const connections = Object.entries(neighbors)
-        .filter(([key, cell]) => 
-          ['n', 'e', 's', 'w'].includes(key) &&
-          cell.type === 'commercial-corridor'
-        )
+        .filter(([key, cell]) => cell.type === 'commercial-corridor')
         .map(([key]) => key) as (keyof Neighbors)[];
 
       if (connections.includes('s')) {
@@ -65,7 +62,11 @@ export class CommetcialCorridorCell extends MapCell {
         }  
       }
 
-      if (connections.includes('s') && connections.includes('e')) {
+      if (
+        connections.includes('s') &&
+        connections.includes('e') &&
+        connections.includes('se')
+      ) {
         for (const [rx, ry, rw, rh] of cluster) {
           console.log(connections, [rx, ry, rw, rh]);
           drawBuilding(args, { rx: rx + 0.5, ry: ry + 0.5, rw, rh }, 'commercial');
