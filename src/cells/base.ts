@@ -18,7 +18,8 @@ export type CellType =
   | 'residential'
   | 'freeway-corridoor'
   | 'park'
-  | 'void';
+  | 'void'
+  | 'commercial-corridor';
 
 export type PaintPass = 0 | 1;
 

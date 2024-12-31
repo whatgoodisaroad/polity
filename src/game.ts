@@ -1,5 +1,5 @@
-import { BaseCard, ParadeCard, ExpandMunicipalCharter, ApproveHousingCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard } from "./card";
-import { CityHallCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
+import { BaseCard, ParadeCard, ExpandMunicipalCharter, ApproveHousingCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard, ApproveCommercialCorridorCard } from "./card";
+import { CityHallCell, CommetcialCorridorCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
 import type { CellType, MapCell } from "./cells/base";
 import { ParkCell } from "./cells/park";
 import { initStat, Stat, StatKey } from "./stats";
@@ -43,10 +43,11 @@ export function getInitialState(): State {
       ['residentialApplications', initStat('residentialApplications')],
     ]),
     hand: [],
-    deck: [
+    deck: shuffle([
       new ParksAndRecreationCard(),
       new ExpandMunicipalCharter(),
       new ResidentialTaxAdjustmentCard(),
+      new ApproveCommercialCorridorCard(),
       new ParadeCard(),
       new ApproveHousingCard(),
       new ApproveHousingCard(),
@@ -56,7 +57,7 @@ export function getInitialState(): State {
       new ApproveHousingCard(),
       new ApproveHousingCard(),
       new ApproveHousingCard(),
-    ],
+    ]),
     discard: [],
   };
 }
@@ -148,6 +149,8 @@ export function placeTile(
   let newCell: MapCell | undefined;
   if (type === 'freeway-corridoor') {
     newCell = new FreewayCorridorCell(row, column);
+  } else if (type === 'commercial-corridor') {
+    newCell = new CommetcialCorridorCell(row, column);
   } else if (type === 'residential') {
     newCell = new ResidentialCell(row, column);
   } else if (type === 'park') {

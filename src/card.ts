@@ -145,3 +145,22 @@ export class ParadeCard extends BaseCard {
     return 'Throw a parade for the town. +10 AP';
   }
 }
+
+export class ApproveCommercialCorridorCard extends BaseCard {
+  constructor() {
+    super('Approve Commercial Application');
+    this.imageUrl = 'img/MarketDistrict.jpeg';
+    this.cost = new Map([
+      ['ap', 3],
+      ['commercialApplications', 5],
+    ]);
+  }
+
+  effect(state: State): State {
+    return super.effect({ ...state, paintTile: 'commercial-corridor' });
+  }
+
+  getDescription(): string {
+    return 'Approve applications to develop a commercial corrdior';
+  }
+}
