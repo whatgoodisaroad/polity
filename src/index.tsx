@@ -203,7 +203,9 @@ function Card({
   >
     <div className="card-title">
       {card.name}{' '}
-      <Badge value={card.apCost} type="ap" />
+    </div>
+    <div>
+      {[...card.cost.entries()].map(([key, cost]) => <Badge value={cost} type={key} />)}
     </div>
     {card.imageUrl && (
       <div

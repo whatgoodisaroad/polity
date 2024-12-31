@@ -1,35 +1,37 @@
 import { CityHallCell } from "./cells";
 import { discardHandCardById, findCellByType, replaceCell, State } from "./game";
 import { v4 as uuid } from 'uuid';
-import { getStatValue, modifyStat } from "./stats";
+import { getStatValue, modifyStat, StatKey } from "./stats";
 
 export abstract class BaseCard {
   id: string;
   name: string;
   imageUrl?: string;
-  apCost: number = 0;
+  cost: Map<StatKey, number> = new Map();
 
   constructor(name: string) {
     this.id = uuid();
     this.name = name;
   }
 
+  canPlay(state: State): boolean {
+    for (const [key, cost] of this.cost.entries()) {
+      if (getStatValue(state, key) < cost) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   effect(state: State): State {
-    return  discardHandCardById(
-      modifyStat(
-        state,
-        'ap',
-        (ap) => ap - this.apCost
-      ),
-      this.id
-    );
+    for (const [key, cost] of this.cost.entries()) {
+      state = modifyStat(state, key, (value) => value - cost);
+    }
+    return discardHandCardById(state, this.id);
   }
 
   abstract getDescription(): string;
 
-  canPlay(state: State): boolean {
-    return getStatValue(state, 'ap') >= this.apCost;
-  }
 }
 
 export class ApproveHousingCard extends BaseCard {
@@ -38,7 +40,10 @@ export class ApproveHousingCard extends BaseCard {
   constructor() {
     super('Approve Housing');
     this.imageUrl = 'img/HousingDevelopmentInitiative.png';
-    this.apCost = 2;
+    this.cost = new Map([
+      ['ap', 2],
+      ['residentialApplications', 1],
+    ]);
   }
 
   effect(state: State): State {
@@ -66,7 +71,7 @@ export class ExpandMunicipalCharter extends BaseCard {
   constructor() {
     super('Expand Municipal Charter');
     this.imageUrl = 'img/MunicipalBondIssuance.jpeg';
-    this.apCost = 5;
+    this.cost = new Map([['ap', 5]]);
   }
 
   effect(state: State): State {
@@ -87,7 +92,7 @@ export class ParksAndRecreationCard extends BaseCard {
   constructor() {
     super('Parks & Rec Project');
     this.imageUrl = 'img/Park.jpeg';
-    this.apCost = 3;
+    this.cost = new Map([['ap', 3]]);
   }
 
   effect(state: State): State {
@@ -103,7 +108,7 @@ export class ResidentialTaxAdjustmentCard extends BaseCard {
   constructor() {
     super('Residential Tax Adjustnment');
     this.imageUrl = 'img/ResidentialTaxAdjustment.jpeg';
-    this.apCost = 3;
+    this.cost = new Map([['ap', 3]]);
   }
 
   effect(state: State): State {
@@ -125,7 +130,7 @@ export class ParadeCard extends BaseCard {
   constructor() {
     super('Parade');
     this.imageUrl = 'img/Parade.jpeg';
-    this.apCost = 5;
+    this.cost = new Map([['ap', 5]]);
   }
 
   effect(state: State): State {
