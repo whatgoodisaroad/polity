@@ -11,7 +11,10 @@ export interface Stat {
 export type StatKey =
   | 'money'
   | 'ap'
-  | 'residentialTaxRate';
+  | 'residentialTaxRate'
+  | 'residentialApplications'
+  | 'commercialApplications'
+  | 'industrialApplications';
 
 export function modifyStat(
   state: State,
@@ -58,6 +61,12 @@ export function initStat(key: StatKey): Stat {
     return { value: 4, max: 20, lifecycle: 'game', display: true };
   } else if (key === 'residentialTaxRate') {
     return { value: 0.05, max: 0.5, lifecycle: 'game' };
+  } else if (key === 'residentialApplications') {
+    return { value: 4, max: 20, display: true, lifecycle: 'game' };
+  } else if (key === 'commercialApplications') {
+    return { value: 4, max: 20, display: true, lifecycle: 'game' };
+  } else if (key === 'industrialApplications') {
+    return { value: 4, max: 20, display: true, lifecycle: 'game' };
   }
   throw `Unrecognized stat ${key}`;
 }

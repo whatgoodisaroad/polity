@@ -32,19 +32,33 @@ export abstract class BaseCard {
   }
 }
 
-export class HousingDevelopmentInitiativeCard extends BaseCard {
+export class ApproveHousingCard extends BaseCard {
+  residentialApplicationCost = 1;
+  
   constructor() {
-    super('Housing Development Initiative');
+    super('Approve Housing');
     this.imageUrl = 'img/HousingDevelopmentInitiative.png';
     this.apCost = 2;
   }
 
   effect(state: State): State {
-    return super.effect({ ...state, paintTile: 'residential' });
+    return modifyStat(
+      super.effect({ ...state, paintTile: 'residential' }),
+      'residentialApplications',
+      (ap) => ap - this.residentialApplicationCost
+    );
   }
 
   getDescription(): string {
     return 'Place a residential tile.';
+  }
+
+  canPlay(state: State): boolean {
+    if (!super.canPlay(state)) {
+      return false;
+    }
+    const apps = getStatValue(state, 'residentialApplications');
+    return apps >= this.residentialApplicationCost;
   }
 }
 

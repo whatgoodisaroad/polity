@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile } from './game';
-import { PaintPass } from './cells/base';
+import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
+import { MapCell, PaintPass } from './cells/base';
 import { BaseCard } from './card';
 import { StatKey } from './stats';
 
@@ -117,32 +117,7 @@ function Game(): React.ReactNode {
           setHover({ row, column });
         }}
       />
-      <div>
-        <table>
-          <tbody>
-            {[...state.stats.entries()].filter(([, { display }]) => display).map(([key, value]) => (
-              <tr key={key}>
-                <td>{value.displayName ?? key}:</td>
-                <td>
-                  {value.value} {value.max ? ` / ${value.max}` : ''}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {hoverCell && <>
-          <table>
-            <tbody>
-              {[...hoverCell.getDescription().entries()].map(([key, value]) => (
-                <tr key={key}>
-                  <td>{key}:</td>
-                  <td>{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>}
-      </div>
+      <Stats state={state} hoverCell={hoverCell} />
     </Row>
     <Row>
       <div>
@@ -240,8 +215,56 @@ function Card({
   </div>;
 }
 
-function Badge({ value, type }: { value: number; type: StatKey }): React.ReactNode {
+function Badge({ value, type }: { value?: number; type: StatKey }): React.ReactNode {
   return <span className={`badge ${type}`}>{value}</span>;
+}
+
+function Stats({
+  state,
+  hoverCell,
+}: {
+  state: State;
+  hoverCell: MapCell | null;
+}): React.ReactNode {
+  const badgedStats: StatKey[] = [
+    'ap',
+    'money',
+    'residentialApplications',
+    'commercialApplications',
+    'industrialApplications',
+  ];
+  return (
+    <div>
+      <table>
+        <tbody>
+          {[...state.stats.entries()].filter(([, { display }]) => display).map(([key, value]) => (
+            <tr key={key}>
+              <td>
+                {badgedStats.includes(key)
+                  ? <Badge type={key} />
+                  : value.displayName ?? key
+                }:</td>
+              <td>
+                {value.value} {value.max ? ` / ${value.max}` : ''}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {hoverCell && <>
+        <table>
+          <tbody>
+            {[...hoverCell.getDescription().entries()].map(([key, value]) => (
+              <tr key={key}>
+                <td>{key}:</td>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </>}
+    </div>
+  );
 }
 
 const root = createRoot(document.getElementById('container')!);

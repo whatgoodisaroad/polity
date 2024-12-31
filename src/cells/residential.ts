@@ -1,4 +1,4 @@
-import { State } from "../game";
+import { replaceCell, State } from "../game";
 import { getStatValue, modifyStat } from "../stats";
 import { Color, MapCell, PaintArgs } from "./base";
 
@@ -9,6 +9,10 @@ type Dwelling = {
 
 export class ResidentialCell extends MapCell {
   dwellings: Dwelling[];
+  addDwellingProbability = 0.2;
+  addResidentialApplicationProbability = 0.2;
+  addCommercialApplicationProbability = 0.2;
+  addIndustrialApplicationProbability = 0.2;
   
   constructor(
     row: number,
@@ -127,6 +131,7 @@ export class ResidentialCell extends MapCell {
   }
 
   applyStartOfRoundEffects(state: State): State {
+    // Colllect taxes
     const residentialTaxRate = getStatValue(state, 'residentialTaxRate');
     state = modifyStat(state, 'money', (value) => {
       const taxRevinue = Math.floor(
@@ -135,19 +140,23 @@ export class ResidentialCell extends MapCell {
       return value + taxRevinue - this.getMaintenanceCost();
     });
     
-    const map = state.map.filter(
-      ({ row, column}) => row !== this.row || column !== this.column
-    );
-    if (Math.random() > 0.8) {
-      map.push(this.addDwelling());
-    } else {
-      map.push(this);
+    // Maybe add an occupied dwelling
+    if (Math.random() >= this.addDwellingProbability) {
+      state = replaceCell(state, this.row, this.column, this.addDwelling());
     }
 
-    return {
-      ...state,
-      map,
+    // Maybe engage in entrepeneurialism
+    if (Math.random() >= this.addResidentialApplicationProbability) {
+      state = modifyStat(state, 'residentialApplications', (value) => value + 1);
     }
+    if (Math.random() >= this.addCommercialApplicationProbability) {
+      state = modifyStat(state, 'commercialApplications', (value) => value + 1);
+    }
+    if (Math.random() >= this.addIndustrialApplicationProbability) {
+      state = modifyStat(state, 'industrialApplications', (value) => value + 1);
+    }
+
+    return state;
   }
 }
 

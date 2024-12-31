@@ -1,4 +1,4 @@
-import { BaseCard, ParadeCard, ExpandMunicipalCharter, HousingDevelopmentInitiativeCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard } from "./card";
+import { BaseCard, ParadeCard, ExpandMunicipalCharter, ApproveHousingCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard } from "./card";
 import { CityHallCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
 import type { CellType, MapCell } from "./cells/base";
 import { ParkCell } from "./cells/park";
@@ -40,6 +40,7 @@ export function getInitialState(): State {
     stats: new Map([
       ['ap', initStat('ap')],
       ['money', initStat('money')],
+      ['residentialApplications', initStat('residentialApplications')],
     ]),
     hand: [],
     deck: [
@@ -47,14 +48,14 @@ export function getInitialState(): State {
       new ExpandMunicipalCharter(),
       new ResidentialTaxAdjustmentCard(),
       new ParadeCard(),
-      new HousingDevelopmentInitiativeCard(),
-      new HousingDevelopmentInitiativeCard(),
-      new HousingDevelopmentInitiativeCard(),
-      new HousingDevelopmentInitiativeCard(),
-      new HousingDevelopmentInitiativeCard(),
-      new HousingDevelopmentInitiativeCard(),
-      new HousingDevelopmentInitiativeCard(),
-      new HousingDevelopmentInitiativeCard(),
+      new ApproveHousingCard(),
+      new ApproveHousingCard(),
+      new ApproveHousingCard(),
+      new ApproveHousingCard(),
+      new ApproveHousingCard(),
+      new ApproveHousingCard(),
+      new ApproveHousingCard(),
+      new ApproveHousingCard(),
     ],
     discard: [],
   };
