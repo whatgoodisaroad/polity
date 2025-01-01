@@ -116,7 +116,10 @@ export class ParadeCard extends BaseCard {
   constructor() {
     super('Parade');
     this.imageUrl = 'img/Parade.jpeg';
-    this.cost = new Map([['ap', 5]]);
+    this.cost = new Map([
+      ['ap', 5],
+      ['money', 50_000],
+    ]);
   }
 
   effect(state: State): State {
