@@ -52,34 +52,33 @@ export class CommercialCorridorCell extends MapCell {
         [0.76, 0.64, 0.22, 0.08],
       ];
 
+      const buildings: Coords[] = [];
+
       for (const [rx, ry, rw, rh] of cluster) {
-        drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+        buildings.push([rx, ry, rw, rh]);
       }
 
       const connections = Object.entries(neighbors)
-        .filter(([key, cell]) => cell.type === 'commercial-corridor')
+        .filter(([, cell]) => cell.type === 'commercial-corridor')
         .map(([key]) => key) as (keyof Neighbors)[];
 
       if (connections.includes('s')) {
         for (const [rx, ry, rw, rh] of cluster) {
-          console.log(connections, [rx, ry, rw, rh]);
-          drawBuilding(args, { rx, ry: ry + 0.5, rw, rh }, 'commercial');
+          buildings.push([rx, ry + 0.5, rw, rh]);
         }
       } else {
         for (const cs of rightRows) {
-          const [rx, ry, rw, rh] = rot90(cs);
-          drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+          buildings.push(rot90(cs));
         }
       }
       
       if (connections.includes('e')) {
         for (const [rx, ry, rw, rh] of cluster) {
-          console.log(connections, [rx, ry, rw, rh]);
-          drawBuilding(args, { rx: rx + 0.5, ry, rw, rh }, 'commercial');
+          buildings.push([rx + 0.5, ry, rw, rh]);
         }
       } else {
         for (const [rx, ry, rw, rh] of rightRows) {
-          drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+          buildings.push([rx, ry, rw, rh]);
         }
       }
 
@@ -89,33 +88,29 @@ export class CommercialCorridorCell extends MapCell {
         connections.includes('se')
       ) {
         for (const [rx, ry, rw, rh] of cluster) {
-          console.log(connections, [rx, ry, rw, rh]);
-          drawBuilding(args, { rx: rx + 0.5, ry: ry + 0.5, rw, rh }, 'commercial');
+          buildings.push([rx + 0.5, ry + 0.5, rw, rh]);
         }
       } else {
         for (const cs of topRightRows) {
-          const [rx, ry, rw, rh] = rot90(cs);
-          drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+          buildings.push(rot90(cs));
         }
       }
 
       if (!connections.includes('n') || !connections.includes('e')) {
         for (const [rx, ry, rw, rh] of topRightRows) {
-          drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+          buildings.push([rx, ry, rw, rh]);
         }
       }
 
       if (!connections.includes('w') || !connections.includes('s')) {
         for (const cs of topRightRows) {
-          const [rx, ry, rw, rh] = rot90(rot90(cs));
-          drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+          buildings.push(rot90(rot90(cs)));
         }
       }
 
       if (!connections.includes('w')) {
         for (const cs of rightRows) {
-          const [rx, ry, rw, rh] = rot90(rot90(cs));
-          drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+          buildings.push(rot90(rot90(cs)));
         }
       }
 
@@ -125,16 +120,18 @@ export class CommercialCorridorCell extends MapCell {
         !connections.includes('n')
       ) {
         for (const cs of topRightRows) {
-          const [rx, ry, rw, rh] = rot90(rot90(rot90(cs)))
-          drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+          buildings.push(rot90(rot90(rot90(cs))));
         }
       }
 
       if (!connections.includes('n')) {
         for (const cs of rightRows) {
-          const [rx, ry, rw, rh] = rot90(rot90(rot90(cs)));
-          drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
+          buildings.push(rot90(rot90(rot90(cs))));
         }
+      }
+
+      for (const [rx, ry, rw, rh] of buildings) {
+        drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
       }
     }
   }
