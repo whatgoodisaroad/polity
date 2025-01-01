@@ -1,5 +1,5 @@
 import { BaseCard, ParadeCard, ExpandMunicipalCharter, ApproveHousingCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard, ApproveCommercialCorridorCard } from "./card";
-import { CityHallCell, CommetcialCorridorCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
+import { CityHallCell, CommercialCorridorCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
 import type { CellType, MapCell } from "./cells/base";
 import { ParkCell } from "./cells/park";
 import { initStat, Stat, StatKey } from "./stats";
@@ -150,7 +150,7 @@ export function placeTile(
   if (type === 'freeway-corridoor') {
     newCell = new FreewayCorridorCell(row, column);
   } else if (type === 'commercial-corridor') {
-    newCell = new CommetcialCorridorCell(row, column);
+    newCell = new CommercialCorridorCell(row, column);
   } else if (type === 'residential') {
     newCell = new ResidentialCell(row, column);
   } else if (type === 'park') {
