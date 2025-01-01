@@ -1,4 +1,6 @@
-import { BaseCard, ParadeCard, ExpandMunicipalCharter, ApproveHousingCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard, ApproveCommercialCorridorCard } from "./card";
+import { ApproveHousingCard, ExpandMunicipalCharter, ParadeCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard } from "./cards";
+import { ApproveCommercialCorridorCard } from "./cards/ApproveCommercialCorridor";
+import { BaseCard } from "./cards/base";
 import { CityHallCell, CommercialCorridorCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
 import type { CellType, MapCell } from "./cells/base";
 import { ParkCell } from "./cells/park";

@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
 import { MapCell, PaintPass } from './cells/base';
-import { BaseCard } from './card';
+import { BaseCard } from './cards/base';
 import { StatKey } from './stats';
 
 function Game(): React.ReactNode {
