@@ -143,15 +143,20 @@ function Game(): React.ReactNode {
       />
     </Row>
     <Row className="tray">
-      <Stats state={state} hoverCell={hoverCell} />
-      <div>
-        <button onClick={zoomOut}>-</button>
-        <button onClick={zoomIn}>+</button>
-        <button onClick={moveUp}>⬆</button>
-        <button onClick={moveDown}>⬇</button>
-        <button onClick={moveLeft}>⬅</button>
-        <button onClick={moveRight}>⮕</button>
-        <button onClick={endTurn} disabled={!!state.paintTile}>End Turn</button>
+      <div className="controls">
+        <button className="button zoomOutButton" onClick={zoomOut}>-</button>
+        <button className="button zoomInButton" onClick={zoomIn}>+</button>
+        <button className="button moveUpButton" onClick={moveUp}>⬆</button>
+        <button className="button moveDownButton" onClick={moveDown}>⬇</button>
+        <button className="button moveLeftButton" onClick={moveLeft}>⬅</button>
+        <button className="button moveRightButton" onClick={moveRight}>⮕</button>
+        <button
+          className="endTurnButton"
+          onClick={endTurn}
+          disabled={!!state.paintTile}
+        >
+          End Turn
+        </button>
       </div>
       {!state.paintTile && (
         <Hand
@@ -160,6 +165,7 @@ function Game(): React.ReactNode {
         />
       )}
       {state.paintTile && <h1>Place a {state.paintTile}</h1>}
+      <Stats state={state} hoverCell={hoverCell} />
     </Row>
   </div>;
 }

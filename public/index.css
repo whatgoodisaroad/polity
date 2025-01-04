@@ -99,3 +99,50 @@ body {
 .badge.industrialApplications::before {
   content: 'Ind ';
 }
+
+.controls {
+  position: relative;
+  width: 175px;
+  margin-right: 70px;
+}
+.controls .button {
+  width: 45px;
+  height: 45px;
+}
+.controls .zoomOutButton {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+.controls .zoomInButton {
+  position: absolute;
+  left: 110px;
+  top: 10px;
+}
+.controls .moveUpButton {
+  position: absolute;
+  left: 60px;
+  top: 10px;
+}
+.controls .moveLeftButton {
+  position: absolute;
+  left: 10px;
+  top: 60px;
+}
+.controls .moveRightButton {
+  position: absolute;
+  left: 110px;
+  top: 60px;
+}
+.controls .moveDownButton {
+  position: absolute;
+  left: 60px;
+  top: 110px;
+}
+.controls .endTurnButton {
+  position: absolute;
+  left: 10px;
+  top: 170px;
+  width: 145px;
+  height: 45px;
+}
