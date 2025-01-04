@@ -1,8 +1,10 @@
 import { ApproveHousingCard, ExpandMunicipalCharter, ParadeCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard } from "./cards";
 import { ApproveCommercialCorridorCard } from "./cards/ApproveCommercialCorridor";
+import { ApproveIndustrialCard } from "./cards/ApproveIndustrial";
 import { BaseCard } from "./cards/base";
 import { CityHallCell, CommercialCorridorCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
 import type { CellType, MapCell } from "./cells/base";
+import { IndustrialCell } from "./cells/industrial";
 import { ParkCell } from "./cells/park";
 import { initStat, Stat, StatKey } from "./stats";
 
@@ -46,6 +48,7 @@ export function getInitialState(): State {
     ]),
     hand: [],
     deck: shuffle([
+      new ApproveIndustrialCard(),
       new ParksAndRecreationCard(),
       new ExpandMunicipalCharter(),
       new ResidentialTaxAdjustmentCard(),
@@ -155,6 +158,8 @@ export function placeTile(
     newCell = new CommercialCorridorCell(row, column);
   } else if (type === 'residential') {
     newCell = new ResidentialCell(row, column);
+  } else if (type === 'industrial') {
+    newCell = new IndustrialCell(row, column);
   } else if (type === 'park') {
     newCell = new ParkCell(row, column);
   }

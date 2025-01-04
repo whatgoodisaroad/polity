@@ -19,7 +19,8 @@ export type CellType =
   | 'freeway-corridoor'
   | 'park'
   | 'void'
-  | 'commercial-corridor';
+  | 'commercial-corridor'
+  | 'industrial';
 
 export type PaintPass = 0 | 1;
 
