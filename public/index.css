@@ -22,20 +22,31 @@ body {
 .card {
   width: 200px;
   height: 300px;
-  border: 1px solid black;
   border-radius: 10px;
   position: relative;
   background-color: #fff;
 }
 .card .card-title {
   font-weight: bold;
-  height: 40px;
+  height: 30px;
   display: block;
+  margin: 10px 10px 0 10px;
+  padding: 0;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card .card-cost {
+  margin: 0 10px 10px 10px;
 }
 .card .card-image {
   height: 160px;
   width: 100%;
   background-size: cover;
+}
+.card .card-description {
+  margin: 10px;
 }
 
 .hand {
@@ -54,8 +65,13 @@ body {
   margin-left: 0;
 }
 .hand .card:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   transform: rotate(0) translateY(-30px) !important;
-  z-index: 1;
+  z-index: 1; 
+}
+
+.stats {
+  margin-left: 70px;
 }
 
 .badge {

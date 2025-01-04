@@ -235,10 +235,10 @@ function Card({
     className="card"
     onClick={() => onClick(card)}
   >
-    <div className="card-title">
+    <div className="card-title" title={card.name}>
       {card.name}{' '}
     </div>
-    <div>
+    <div className="card-cost">
       {[...card.cost.entries()].map(([key, cost]) => <Badge value={cost} type={key} />)}
     </div>
     {card.imageUrl && (
@@ -247,7 +247,7 @@ function Card({
         style={{backgroundImage: `url(${card.imageUrl})` }}
       />
     )}
-    <div>{card.getDescription()}</div>
+    <div className="card-description">{card.getDescription()}</div>
   </div>;
 }
 
@@ -270,7 +270,7 @@ function Stats({
     'industrialApplications',
   ];
   return (
-    <div>
+    <div className="stats">
       <table>
         <tbody>
           {[...state.stats.entries()].filter(([, { display }]) => display).map(([key, value]) => (
