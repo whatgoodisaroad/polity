@@ -2,7 +2,19 @@ body {
   font-family:Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+  background: #414245;
 }
+.canvas {
+  position: fixed;
+  height: 70vh;
+  width: 100%;
+}
+.tray {
+  position: fixed;
+  top: 70vh;
+  width: 100%;
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -27,6 +39,7 @@ body {
 }
 
 .hand {
+  position: relative;
   display: flex;
   flex-direction: row-reverse;
   justify-content: center;

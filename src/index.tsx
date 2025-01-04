@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
 import { MapCell, PaintPass } from './cells/base';
 import { BaseCard } from './cards/base';
@@ -44,12 +44,13 @@ function Game(): React.ReactNode {
   };
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasHeight = 600;
-  const canvasWidth = Math.floor(aspect * canvasHeight);
+  const { height: canvasHeight, width: canvasWidth } = useCanvasSize(canvasRef);
 
   const offsetToCoord = (
     offsetX: number,
-    offsetY: number
+    offsetY: number,
+    canvasWidth: number,
+    canvasHeight: number,
   ): {
     row: number;
     column: number;
@@ -61,45 +62,58 @@ function Game(): React.ReactNode {
     return { row, column };
   };
 
-  useEffect(() => {
-    const context = canvasRef.current?.getContext('2d');
-    if (!context) {
-      return;
-    }
-    const cellHeight = Math.floor(canvasHeight / zoom);
-    const cellWidth = Math.floor(canvasWidth / Math.floor(aspect * zoom));
-    const visible = getGrid(state, { rowStart, rowEnd, colStart, colEnd }).flat();
-    for (const pass of [0, 1] as PaintPass[]) {
-      for (const cell of visible) {
-        const { row, column } = cell;
+  useEffect(
+    () => {
+      const context = canvasRef.current?.getContext('2d');
+      if (!context) {
+        return;
+      }
+      const cellHeight = Math.floor(canvasHeight / zoom);
+      const cellWidth = Math.floor(canvasWidth / Math.floor(aspect * zoom));
+      const visible = getGrid(state, { rowStart, rowEnd, colStart, colEnd }).flat();
+      for (const pass of [0, 1] as PaintPass[]) {
+        for (const cell of visible) {
+          const { row, column } = cell;
+          const y = (row - rowStart) * cellHeight;
+          const x = (column - colStart) * cellWidth;
+          cell.paint({
+            context,
+            x,
+            y,
+            h: cellHeight,
+            w: cellWidth,
+            pass,
+            neighbors: getNeighbors(row, column, state),
+          });
+        }
+      }
+
+      if (hover) {
+        const { row, column } = hover;
         const y = (row - rowStart) * cellHeight;
         const x = (column - colStart) * cellWidth;
-        cell.paint({
-          context,
-          x,
-          y,
-          h: cellHeight,
-          w: cellWidth,
-          pass,
-          neighbors: getNeighbors(row, column, state),
-        });
+        context.strokeStyle = '#000';
+        context.lineWidth = 1;
+        context.strokeRect(x, y, cellWidth, cellHeight);
       }
-    }
 
-    if (hover) {
-      const { row, column } = hover;
-      const y = (row - rowStart) * cellHeight;
-      const x = (column - colStart) * cellWidth;
-      context.strokeStyle = '#000';
-      context.lineWidth = 1;
-      context.strokeRect(x, y, cellWidth, cellHeight);
-    }
-
-  }, [state.map, zoom, centerRow, centerColumn, hover?.row, hover?.column]);
+    },
+    [
+      state.map,
+      zoom,
+      centerRow,
+      centerColumn,
+      hover?.row,
+      hover?.column,
+      canvasWidth,
+      canvasHeight,
+    ]
+  );
 
   return <div>
     <Row>
       <canvas
+        className="canvas"
         ref={canvasRef}
         height={canvasHeight}
         width={canvasWidth}
@@ -108,18 +122,28 @@ function Game(): React.ReactNode {
             return;
           }
           const { offsetX, offsetY } = e.nativeEvent;
-          const { row, column } = offsetToCoord(offsetX, offsetY);
+          const { row, column } = offsetToCoord(
+            offsetX,
+            offsetY,
+            canvasWidth,
+            canvasHeight,
+          );
           setState(placeTile(state, state.paintTile, row, column));
         }}
         onMouseMove={(e) => {
           const { offsetX, offsetY } = e.nativeEvent;
-          const { row, column } = offsetToCoord(offsetX, offsetY);
+          const { row, column } = offsetToCoord(
+            offsetX,
+            offsetY,
+            canvasWidth,
+            canvasHeight,
+          );
           setHover({ row, column });
         }}
       />
-      <Stats state={state} hoverCell={hoverCell} />
     </Row>
-    <Row>
+    <Row className="tray">
+      <Stats state={state} hoverCell={hoverCell} />
       <div>
         <button onClick={zoomOut}>-</button>
         <button onClick={zoomIn}>+</button>
@@ -129,8 +153,6 @@ function Game(): React.ReactNode {
         <button onClick={moveRight}>⮕</button>
         <button onClick={endTurn} disabled={!!state.paintTile}>End Turn</button>
       </div>
-    </Row>
-    <div>
       {!state.paintTile && (
         <Hand
           hand={state.hand}
@@ -138,13 +160,19 @@ function Game(): React.ReactNode {
         />
       )}
       {state.paintTile && <h1>Place a {state.paintTile}</h1>}
-    </div>
+    </Row>
   </div>;
 }
 
-function Row({ children }: { children: React.ReactNode }): React.ReactNode {
+function Row({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}): React.ReactNode {
   return (
-    <div className="row">
+    <div className={`row ${className}`}>
       {children}
     </div>
   );
@@ -268,6 +296,32 @@ function Stats({
     </div>
   );
 }
+
+type Size = {
+  width: number;
+  height: number;
+};
+
+function useCanvasSize(ref: React.RefObject<HTMLCanvasElement | null>): Size {
+  const [size, setSize] = useState<Size>({ height: 1, width: 1 });
+  const updateSize = () => {
+    if (!ref.current) {
+      return;
+    }
+    const { height, width } = ref.current.getBoundingClientRect();
+    setSize({ height, width });
+  }
+  useLayoutEffect(
+    () => {
+      window.addEventListener('resize', updateSize);
+      updateSize();
+      return () => window.removeEventListener('resize', updateSize);
+    },
+    []
+  );
+  return size;
+}
+
 
 const root = createRoot(document.getElementById('container')!);
 root.render(<Game/>);
