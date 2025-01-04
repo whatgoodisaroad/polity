@@ -2,7 +2,19 @@ body {
   font-family:Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+  background: #414245;
 }
+.canvas {
+  position: fixed;
+  height: 70vh;
+  width: 100%;
+}
+.tray {
+  position: fixed;
+  top: 70vh;
+  width: 100%;
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -10,23 +22,35 @@ body {
 .card {
   width: 200px;
   height: 300px;
-  border: 1px solid black;
   border-radius: 10px;
   position: relative;
   background-color: #fff;
 }
 .card .card-title {
   font-weight: bold;
-  height: 40px;
+  height: 30px;
   display: block;
+  margin: 10px 10px 0 10px;
+  padding: 0;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card .card-cost {
+  margin: 0 10px 10px 10px;
 }
 .card .card-image {
   height: 160px;
   width: 100%;
   background-size: cover;
 }
+.card .card-description {
+  margin: 10px;
+}
 
 .hand {
+  position: relative;
   display: flex;
   flex-direction: row-reverse;
   justify-content: center;
@@ -41,8 +65,13 @@ body {
   margin-left: 0;
 }
 .hand .card:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   transform: rotate(0) translateY(-30px) !important;
-  z-index: 1;
+  z-index: 1; 
+}
+
+.stats {
+  margin-left: 70px;
 }
 
 .badge {
@@ -85,4 +114,51 @@ body {
 }
 .badge.industrialApplications::before {
   content: 'Ind ';
+}
+
+.controls {
+  position: relative;
+  width: 175px;
+  margin-right: 70px;
+}
+.controls .button {
+  width: 45px;
+  height: 45px;
+}
+.controls .zoomOutButton {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+.controls .zoomInButton {
+  position: absolute;
+  left: 110px;
+  top: 10px;
+}
+.controls .moveUpButton {
+  position: absolute;
+  left: 60px;
+  top: 10px;
+}
+.controls .moveLeftButton {
+  position: absolute;
+  left: 10px;
+  top: 60px;
+}
+.controls .moveRightButton {
+  position: absolute;
+  left: 110px;
+  top: 60px;
+}
+.controls .moveDownButton {
+  position: absolute;
+  left: 60px;
+  top: 110px;
+}
+.controls .endTurnButton {
+  position: absolute;
+  left: 10px;
+  top: 170px;
+  width: 145px;
+  height: 45px;
 }
