@@ -4,6 +4,7 @@ import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
 
 export class IndustrialCell extends MapCell {
   monthlyMaintenance = 1_000;
+  addResidentialApplicationProbability = 0.2;
 
   constructor(row: number, column: number, level: number = 1) {
     super('industrial', row, column);
@@ -21,6 +22,9 @@ export class IndustrialCell extends MapCell {
   }
 
   applyStartOfRoundEffects(state: State): State {
+    if (Math.random() <= this.addResidentialApplicationProbability) {
+      state = modifyStat(state, 'residentialApplications', (value) => value + 1);
+    }
     return modifyStat(state, 'money', (value) => value - this.monthlyMaintenance);
   }
 

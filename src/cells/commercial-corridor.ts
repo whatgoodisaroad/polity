@@ -1,7 +1,10 @@
 import { Color, drawBuilding, MapCell, neighborToCoords, PaintArgs } from "./base";
-import { Neighbors } from "../game";
+import { Neighbors, State } from "../game";
+import { modifyStat } from "../stats";
 
 export class CommercialCorridorCell extends MapCell {
+  addIndustrialApplicationProbability = 0.2;
+
   constructor(row: number, column: number) {
     super('commercial-corridor', row, column);
   }
@@ -134,6 +137,13 @@ export class CommercialCorridorCell extends MapCell {
         drawBuilding(args, { rx, ry, rw, rh }, 'commercial');
       }
     }
+  }
+
+  applyStartOfRoundEffects(state: State): State {
+    if (Math.random() <= this.addIndustrialApplicationProbability) {
+      state = modifyStat(state, 'industrialApplications', (value) => value + 1);
+    }
+    return state;
   }
 }
 

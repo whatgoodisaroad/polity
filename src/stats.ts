@@ -62,11 +62,11 @@ export function initStat(key: StatKey): Stat {
   } else if (key === 'residentialTaxRate') {
     return { value: 0.05, max: 0.5, lifecycle: 'game' };
   } else if (key === 'residentialApplications') {
-    return { value: 4, max: 20, display: true, lifecycle: 'game' };
+    return { value: 2, max: 20, display: true, lifecycle: 'game' };
   } else if (key === 'commercialApplications') {
-    return { value: 4, max: 20, display: true, lifecycle: 'game' };
+    return { value: 0, max: 20, display: true, lifecycle: 'game' };
   } else if (key === 'industrialApplications') {
-    return { value: 4, max: 20, display: true, lifecycle: 'game' };
+    return { value: 0, max: 20, display: true, lifecycle: 'game' };
   }
   throw `Unrecognized stat ${key}`;
 }

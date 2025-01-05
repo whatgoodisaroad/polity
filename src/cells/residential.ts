@@ -10,9 +10,7 @@ type Dwelling = {
 export class ResidentialCell extends MapCell {
   dwellings: Dwelling[];
   addDwellingProbability = 0.2;
-  addResidentialApplicationProbability = 0.2;
   addCommercialApplicationProbability = 0.2;
-  addIndustrialApplicationProbability = 0.2;
   
   constructor(
     row: number,
@@ -140,20 +138,15 @@ export class ResidentialCell extends MapCell {
       return value + taxRevinue - this.getMaintenanceCost();
     });
     
+    const residentialApplications = getStatValue(state, 'residentialApplications');
+
     // Maybe add an occupied dwelling
-    if (Math.random() >= this.addDwellingProbability) {
+    if (residentialApplications > 0 && Math.random() >= this.addDwellingProbability) {
       state = replaceCell(state, this.row, this.column, this.addDwelling());
     }
 
-    // Maybe engage in entrepeneurialism
-    if (Math.random() <= this.addResidentialApplicationProbability) {
-      state = modifyStat(state, 'residentialApplications', (value) => value + 1);
-    }
-    if (Math.random() <= this.addCommercialApplicationProbability) {
+    if (Math.random() >= (1 - this.addCommercialApplicationProbability)) {
       state = modifyStat(state, 'commercialApplications', (value) => value + 1);
-    }
-    if (Math.random() <= this.addIndustrialApplicationProbability) {
-      state = modifyStat(state, 'industrialApplications', (value) => value + 1);
     }
 
     return state;
