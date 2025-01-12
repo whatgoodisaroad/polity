@@ -2,7 +2,7 @@ import { MapCell, PaintArgs } from "./base";
 
 export class VoidCell extends MapCell {  
   constructor(row: number, column: number) {
-    super('void', row, column);
+    super('void', row, column, 'infinite');
   }
   
   paint({ context, x, y, w, h, pass }: PaintArgs) {

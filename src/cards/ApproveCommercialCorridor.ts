@@ -7,7 +7,7 @@ export class ApproveCommercialCorridorCard extends BaseCard {
     this.imageUrl = 'img/MarketDistrict.jpeg';
     this.cost = new Map([
       ['ap', 3],
-      ['commercialApplications', 5],
+      ['commercialApplications', 1],
     ]);
   }
 

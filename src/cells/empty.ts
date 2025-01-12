@@ -4,7 +4,7 @@ export class EmptyCell extends MapCell {
   debris: { dh: number; dv: number }[] = [];
   
   constructor(row: number, column: number) {
-    super('empty', row, column);
+    super('empty', row, column, 'infinite');
     const debrisCount = Math.floor(Math.random() * 10) + 3;
     for (let i = 0; i < debrisCount; i++) {
       this.debris.push({ dh: Math.random(), dv: Math.random() });

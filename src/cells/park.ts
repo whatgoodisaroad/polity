@@ -7,7 +7,7 @@ export class ParkCell extends MapCell {
   addResidentialApplicationProbability = 0.05;
 
   constructor(row: number, column: number, level: number = 1) {
-    super('park', row, column);
+    super('park', row, column, 4);
   }
   
   paint({ context, x, y, w, h, pass }: PaintArgs) {

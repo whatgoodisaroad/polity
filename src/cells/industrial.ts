@@ -1,13 +1,14 @@
 import { State } from "../game";
 import { modifyStat } from "../stats";
 import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
+import { JobProvider } from "./JobProvider";
 
-export class IndustrialCell extends MapCell {
+export class IndustrialCell extends MapCell implements JobProvider {
   monthlyMaintenance = 1_000;
   addResidentialApplicationProbability = 0.2;
 
   constructor(row: number, column: number, level: number = 1) {
-    super('industrial', row, column);
+    super('industrial', row, column, 4);
   }
   
   paint(args: PaintArgs) {
@@ -32,6 +33,11 @@ export class IndustrialCell extends MapCell {
     return new Map([
       ['Type', this.type],
       ['Monthly maintenance', `${this.monthlyMaintenance}`],
+      ['Jobs', `${this.getJobCount()}`]
     ]);
+  }
+
+  getJobCount(): number {
+    return 50;
   }
 }

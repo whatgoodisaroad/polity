@@ -1,3 +1,4 @@
+import { getJobDistanceScore } from "../analysis/getJobDIstanceScore";
 import { replaceCell, State } from "../game";
 import { getStatValue, modifyStat } from "../stats";
 import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
@@ -11,14 +12,17 @@ export class ResidentialCell extends MapCell {
   dwellings: Dwelling[];
   addDwellingProbability = 0.2;
   addCommercialApplicationProbability = 0.2;
+  jobDistanceScore: number;
   
   constructor(
     row: number,
     column: number,
     dwellings: Dwelling[] = [],
+    jobDistanceScore: number,
   ) {
-    super('residential', row, column);
+    super('residential', row, column, 4);
     this.dwellings = dwellings;
+    this.jobDistanceScore = jobDistanceScore;
   }
 
   addDwelling(): ResidentialCell {
@@ -45,7 +49,24 @@ export class ResidentialCell extends MapCell {
           propertyValue,
           coordinateIndex,
         },
-      ]
+      ],
+      this.jobDistanceScore,
+    );
+  }
+
+  withUpdatedJobDistanceScore(state: State): ResidentialCell {
+    const jobDistanceScore = getJobDistanceScore(this.row, this.column, state);
+    
+    // Return self if no change is needed:
+    if (jobDistanceScore === this.jobDistanceScore) {
+      return this;
+    }
+
+    return new ResidentialCell(
+      this.row,
+      this.column,
+      [...this.dwellings],
+      jobDistanceScore,
     );
   }
 
@@ -120,12 +141,17 @@ export class ResidentialCell extends MapCell {
 
   getDescription(): Map<string, string> {
     return new Map([
-      ['Type', this.type],
+      ...super.getDescription().entries(),
       ['Lots', `${this.getLotCount()}`],
       ['Dwellings', `${this.dwellings.length}`],
       ['Total Property Value', `\$${this.getTotalPropertyValue()}`],
       ['Monthly maintenance', `\$${this.getMaintenanceCost()}`],
+      ['Proximity to Jobs', `${this.jobDistanceScore}`],
     ]);
+  }
+
+  analyze(state: State): State {
+    return replaceCell(state, this.row, this.column, this.withUpdatedJobDistanceScore(state));
   }
 
   applyStartOfRoundEffects(state: State): State {
@@ -138,10 +164,8 @@ export class ResidentialCell extends MapCell {
       return value + taxRevinue - this.getMaintenanceCost();
     });
     
-    const residentialApplications = getStatValue(state, 'residentialApplications');
-
     // Maybe add an occupied dwelling
-    if (residentialApplications > 0 && Math.random() >= this.addDwellingProbability) {
+    if (Math.random() >= this.addDwellingProbability) {
       state = replaceCell(state, this.row, this.column, this.addDwelling());
     }
 

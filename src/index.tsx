@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
+import { analyze, applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
 import { MapCell, PaintPass } from './cells/base';
 import { BaseCard } from './cards/base';
 import { StatKey } from './stats';
@@ -128,7 +128,7 @@ function Game(): React.ReactNode {
             canvasWidth,
             canvasHeight,
           );
-          setState(placeTile(state, state.paintTile, row, column));
+          setState(analyze(placeTile(state, state.paintTile, row, column)));
         }}
         onMouseMove={(e) => {
           const { offsetX, offsetY } = e.nativeEvent;

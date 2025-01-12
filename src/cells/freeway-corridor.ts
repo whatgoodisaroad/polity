@@ -3,7 +3,7 @@ import { Neighbors } from "../game";
 
 export class FreewayCorridorCell extends MapCell {
   constructor(row: number, column: number) {
-    super('freeway-corridoor', row, column);
+    super('freeway-corridoor', row, column, 1);
   }
   
   paint({ context, x, y, w, h, pass, neighbors}: PaintArgs) {

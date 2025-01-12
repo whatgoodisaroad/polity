@@ -24,6 +24,8 @@ export type CellType =
 
 export type PaintPass = 0 | 1;
 
+export type MovementCost = number | 'infinite';
+
 export type PaintArgs = {
   context: CanvasRenderingContext2D;
   x: number;
@@ -38,20 +40,29 @@ export abstract class MapCell {
   type: CellType;
   row: number;
   column: number;
+  movementCost: MovementCost;
 
-  constructor(type: CellType, row: number, column: number) {
+  constructor(type: CellType, row: number, column: number, movementCost: MovementCost) {
     this.type = type
     this.row = row;
-    this.column = column; 
+    this.column = column;
+    this.movementCost = movementCost;
   }
 
   abstract paint(args: PaintArgs): void;
 
   getDescription(): Map<string, string> {
-    return new Map([['Type', this.type]]);
+    return new Map([
+      ['Type', this.type],
+      ['Movement cost', `${this.movementCost}`],
+    ]);
   }
 
   applyStartOfRoundEffects(state: State): State {
+    return state;
+  }
+
+  analyze(state: State): State {
     return state;
   }
 }

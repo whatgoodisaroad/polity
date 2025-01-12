@@ -1,3 +1,4 @@
+import { getJobDistanceScore } from "./analysis/getJobDIstanceScore";
 import { ApproveHousingCard, ExpandMunicipalCharter, ParadeCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard } from "./cards";
 import { ApproveCommercialCorridorCard } from "./cards/ApproveCommercialCorridor";
 import { ApproveIndustrialCard } from "./cards/ApproveIndustrial";
@@ -157,7 +158,7 @@ export function placeTile(
   } else if (type === 'commercial-corridor') {
     newCell = new CommercialCorridorCell(row, column);
   } else if (type === 'residential') {
-    newCell = new ResidentialCell(row, column);
+    newCell = new ResidentialCell(row, column, undefined, getJobDistanceScore(row, column, state));
   } else if (type === 'industrial') {
     newCell = new IndustrialCell(row, column);
   } else if (type === 'park') {
@@ -220,6 +221,14 @@ export function applyStartOfRoundEffects(state: State): State {
   }
 
   return draw({ ...newState });
+}
+
+export function analyze(state: State): State {
+  let newState = state;
+  for (const cell of state.map) {
+    newState = cell.analyze(newState);
+  }
+  return newState;
 }
 
 export function discardHandCardById(state: State, cardId: string): State {

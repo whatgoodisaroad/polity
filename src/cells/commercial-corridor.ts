@@ -1,12 +1,13 @@
 import { Color, drawBuilding, MapCell, neighborToCoords, PaintArgs } from "./base";
 import { Neighbors, State } from "../game";
 import { modifyStat } from "../stats";
+import { JobProvider } from "./JobProvider";
 
-export class CommercialCorridorCell extends MapCell {
+export class CommercialCorridorCell extends MapCell implements JobProvider {
   addIndustrialApplicationProbability = 0.2;
 
   constructor(row: number, column: number) {
-    super('commercial-corridor', row, column);
+    super('commercial-corridor', row, column, 3);
   }
   
   paint(args: PaintArgs) {
@@ -144,6 +145,17 @@ export class CommercialCorridorCell extends MapCell {
       state = modifyStat(state, 'industrialApplications', (value) => value + 1);
     }
     return state;
+  }
+
+  getJobCount(): number {
+    return 20;
+  }
+
+  getDescription(): Map<string, string> {
+    return new Map([
+      ...super.getDescription().entries(),
+      ['Jobs', `${this.getJobCount()}`]
+    ]);
   }
 }
 

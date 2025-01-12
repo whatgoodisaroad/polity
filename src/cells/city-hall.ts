@@ -1,12 +1,13 @@
 import { State } from "../game";
 import { modifyStat } from "../stats";
 import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
+import { JobProvider } from "./JobProvider";
 
-export class CityHallCell extends MapCell {
+export class CityHallCell extends MapCell implements JobProvider {
   level: number;
 
   constructor(row: number, column: number, level: number = 1) {
-    super('city-hall', row, column);
+    super('city-hall', row, column, 4);
     this.level = level;
   }
   
@@ -54,6 +55,7 @@ export class CityHallCell extends MapCell {
       ...super.getDescription().entries(),
       ['Effect', `+${this.level} AP`],
       ['Level', `${this.level}`],
+      ['Jobs', `${this.getJobCount()}`]
     ]);
   }
 
@@ -63,5 +65,9 @@ export class CityHallCell extends MapCell {
 
   upgrade(): CityHallCell {
     return new CityHallCell(this.row, this.column, this.level + 1);
+  }
+
+  getJobCount(): number {
+    return 10;
   }
 }
