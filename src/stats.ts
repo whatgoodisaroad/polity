@@ -14,7 +14,8 @@ export type StatKey =
   | 'residentialTaxRate'
   | 'residentialApplications'
   | 'commercialApplications'
-  | 'industrialApplications';
+  | 'industrialApplications'
+  | 'population';
 
 export function modifyStat(
   state: State,
@@ -67,6 +68,8 @@ export function initStat(key: StatKey): Stat {
     return { value: 0, max: 20, display: true, lifecycle: 'game' };
   } else if (key === 'industrialApplications') {
     return { value: 0, max: 20, display: true, lifecycle: 'game' };
+  } else if (key === 'population') {
+    return { value: 0, display: true, lifecycle: 'game' };
   }
   throw `Unrecognized stat ${key}`;
 }

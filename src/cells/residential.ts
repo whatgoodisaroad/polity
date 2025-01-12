@@ -10,8 +10,6 @@ type Dwelling = {
 
 export class ResidentialCell extends MapCell {
   dwellings: Dwelling[];
-  addDwellingProbability = 0.2;
-  addCommercialApplicationProbability = 0.2;
   jobDistanceScore: number;
   
   constructor(
@@ -50,6 +48,18 @@ export class ResidentialCell extends MapCell {
           coordinateIndex,
         },
       ],
+      this.jobDistanceScore,
+    );
+  }
+
+  removeDwelling(): ResidentialCell {
+    if (this.dwellings.length === 0) {
+      throw 'Cell is empty';
+    }
+    return new ResidentialCell(
+      this.row,
+      this.column,
+      [...this.dwellings].slice(1),
       this.jobDistanceScore,
     );
   }
@@ -146,7 +156,7 @@ export class ResidentialCell extends MapCell {
       ['Dwellings', `${this.dwellings.length}`],
       ['Total Property Value', `\$${this.getTotalPropertyValue()}`],
       ['Monthly maintenance', `\$${this.getMaintenanceCost()}`],
-      ['Proximity to Jobs', `${this.jobDistanceScore}`],
+      ['Proximity to Jobs', getProximityFromScore(this.jobDistanceScore)],
     ]);
   }
 
@@ -163,19 +173,49 @@ export class ResidentialCell extends MapCell {
       );  
       return value + taxRevinue - this.getMaintenanceCost();
     });
-    
-    // Maybe add an occupied dwelling
-    if (Math.random() >= this.addDwellingProbability) {
-      state = replaceCell(state, this.row, this.column, this.addDwelling());
-    }
 
-    if (Math.random() >= (1 - this.addCommercialApplicationProbability)) {
+    const proximity = getProximityFromScore(this.jobDistanceScore);
+    if (proximity === 'excellent' && this.dwellings.length < this.getLotCount()) {
+      const addDwellingProbability = 0.75;
+      if (Math.random() <= addDwellingProbability) {
+        state = replaceCell(state, this.row, this.column, this.addDwelling());
+      }  
+    } else if (proximity === 'good') {
+      const addDwellingProbability = 0.5;
+      if (Math.random() <= addDwellingProbability) {
+        state = replaceCell(state, this.row, this.column, this.addDwelling());
+      }
+    } else {
+      const loseDwellingProbability = 0.1;
+      const addDwellingProbability = 0.3;
+      if (Math.random() <= loseDwellingProbability && this.dwellings.length > 0) {
+        state = replaceCell(state, this.row, this.column, this.removeDwelling());
+      } else if (Math.random() <= addDwellingProbability) {
+        state = replaceCell(state, this.row, this.column, this.addDwelling());
+      }
+    }
+    
+    const addCommercialApplicationProbability = 0.2;
+    if (Math.random() >= (1 - addCommercialApplicationProbability)) {
       state = modifyStat(state, 'commercialApplications', (value) => value + 1);
     }
 
     return state;
   }
 }
+
+type JobProximity = 'poor' | 'good' | 'excellent';
+
+function getProximityFromScore(score: number): JobProximity {
+  if (score > 10) {
+    return 'excellent';
+  }
+  if (score > 5) {
+    return 'good';
+  }
+  return 'poor';
+}
+
 
 const HOUSE_COORDINATES = [
   [0.2, 0.04, 0.05, 0.05],

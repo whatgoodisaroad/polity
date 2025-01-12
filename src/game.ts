@@ -7,7 +7,7 @@ import { CityHallCell, CommercialCorridorCell, EmptyCell, FreewayCorridorCell, R
 import type { CellType, MapCell } from "./cells/base";
 import { IndustrialCell } from "./cells/industrial";
 import { ParkCell } from "./cells/park";
-import { initStat, Stat, StatKey } from "./stats";
+import { initStat, modifyStat, Stat, StatKey } from "./stats";
 
 export type State = {
   map: MapCell[];
@@ -216,11 +216,15 @@ function shuffle<T>(a: T[]): T[] {
 
 export function applyStartOfRoundEffects(state: State): State {
   let newState = { ...state, };
+  let population = 0;
   for (const cell of state.map) {
     newState = cell.applyStartOfRoundEffects(newState);
+    if (cell instanceof ResidentialCell) {
+      population += cell.dwellings.length * 3.5;
+    }
   }
 
-  return draw({ ...newState });
+  return modifyStat(draw({ ...newState }), 'population', () => Math.floor(population));
 }
 
 export function analyze(state: State): State {
