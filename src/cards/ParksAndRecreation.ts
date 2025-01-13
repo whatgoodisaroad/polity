@@ -6,6 +6,7 @@ export class ParksAndRecreationCard extends BaseCard {
     super('Parks & Rec Project');
     this.imageUrl = 'img/Park.jpeg';
     this.cost = new Map([['ap', 3]]);
+    this.descriptionSize = 'small';
   }
 
   effect(state: State): State {
@@ -13,6 +14,6 @@ export class ParksAndRecreationCard extends BaseCard {
   }
 
   getDescription(): string {
-    return 'Place a park cell';
+    return 'Residential cells adjacent to a park have a 20% chance of adding a dwelling.';
   }
 }

@@ -7,6 +7,7 @@ export abstract class BaseCard {
   name: string;
   imageUrl?: string;
   cost: Map<StatKey, number> = new Map();
+  descriptionSize: 'normal' | 'small' = 'normal';
 
   constructor(name: string) {
     this.id = uuid();

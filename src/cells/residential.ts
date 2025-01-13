@@ -156,6 +156,7 @@ export class ResidentialCell extends MapCell {
       ['Dwellings', `${this.dwellings.length}`],
       ['Total Property Value', `\$${this.getTotalPropertyValue()}`],
       ['Monthly maintenance', `\$${this.getMaintenanceCost()}`],
+      ['Job Score', `${this.jobDistanceScore}`],
       ['Proximity to Jobs', getProximityFromScore(this.jobDistanceScore)],
     ]);
   }

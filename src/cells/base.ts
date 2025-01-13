@@ -41,6 +41,7 @@ export abstract class MapCell {
   row: number;
   column: number;
   movementCost: MovementCost;
+  areaOfEffect?: { dr: number; dc: number }[];
 
   constructor(type: CellType, row: number, column: number, movementCost: MovementCost) {
     this.type = type

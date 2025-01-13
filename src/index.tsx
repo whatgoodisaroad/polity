@@ -33,7 +33,7 @@ function Game(): React.ReactNode {
     if (state.paintTile) {
       return;
     }
-    setState(applyStartOfRoundEffects(state));
+    setState(analyze(applyStartOfRoundEffects(state)));
   };
   const playCard = (card: BaseCard) => {
     if (!card.canPlay(state)) {
@@ -97,6 +97,18 @@ function Game(): React.ReactNode {
         context.strokeRect(x, y, cellWidth, cellHeight);
       }
 
+      if (hoverCell?.areaOfEffect) {
+        for (const { dr, dc } of hoverCell.areaOfEffect) {
+          const row = hoverCell.row + dr;
+          const column = hoverCell.column + dc;
+          const y = (row - rowStart) * cellHeight;
+          const x = (column - colStart) * cellWidth;
+          context.strokeStyle = '#00f'
+          context.globalAlpha = 0.2;
+          context.fillRect(x, y, cellWidth, cellHeight);
+          context.globalAlpha = 1;
+        }
+      }
     },
     [
       state.map,
@@ -105,6 +117,7 @@ function Game(): React.ReactNode {
       centerColumn,
       hover?.row,
       hover?.column,
+      hoverCell,
       canvasWidth,
       canvasHeight,
     ]
@@ -232,7 +245,7 @@ function Card({
   onClick: (card: BaseCard) => void;
 }): React.ReactNode {
   return <div
-    className="card"
+    className={`card description-size-${card.descriptionSize}`}
     onClick={() => onClick(card)}
   >
     <div className="card-title" title={card.name}>

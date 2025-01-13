@@ -1,7 +1,8 @@
-import { State } from "../game";
+import { getCell, replaceCell, State } from "../game";
 import { modifyStat } from "../stats";
 import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
 import { JobProvider } from "./JobProvider";
+import { ResidentialCell } from "./residential";
 
 export class IndustrialCell extends MapCell implements JobProvider {
   monthlyMaintenance = 1_000;
@@ -9,6 +10,12 @@ export class IndustrialCell extends MapCell implements JobProvider {
 
   constructor(row: number, column: number, level: number = 1) {
     super('industrial', row, column, 4);
+    this.areaOfEffect = [
+      { dr: -1, dc: 0 },
+      { dr: 0, dc: -1 },
+      { dr: 0, dc: 1 },
+      { dr: 1, dc: 0 },
+    ];
   }
   
   paint(args: PaintArgs) {
@@ -23,6 +30,19 @@ export class IndustrialCell extends MapCell implements JobProvider {
   }
 
   applyStartOfRoundEffects(state: State): State {
+    for (const { dr, dc } of this.areaOfEffect ?? []) {
+      const row = this.row + dr;
+      const column = this.column + dc;
+      const cell = getCell(row, column, state);
+      if (cell.type !== 'residential') {
+        continue;
+      }
+      const residentialCell = cell as ResidentialCell;
+      if (Math.random() <= 0.1) {
+        state = replaceCell(state, row, column, residentialCell.removeDwelling());
+      }
+    }
+
     if (Math.random() <= this.addResidentialApplicationProbability) {
       state = modifyStat(state, 'residentialApplications', (value) => value + 1);
     }
@@ -31,9 +51,10 @@ export class IndustrialCell extends MapCell implements JobProvider {
 
   getDescription(): Map<string, string> {
     return new Map([
-      ['Type', this.type],
+      ...super.getDescription().entries(),
       ['Monthly maintenance', `${this.monthlyMaintenance}`],
-      ['Jobs', `${this.getJobCount()}`]
+      ['Jobs', `${this.getJobCount()}`],
+      ['Effect', 'Pollution: orthogonally adjacent residential cells have a 10% chance to lose a dwelling.']
     ]);
   }
 
