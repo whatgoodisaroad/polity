@@ -339,15 +339,44 @@ function Stats({
 }
 
 function SplashScreen({ onBegin }: { onBegin: () => void }): React.ReactElement {
-  return <>
+  return <div className='splash'>
     <h1>Polity: Deckbuilding City Planning</h1>
     <p>
       Polity is a city planning game where the actions you can take are
       determined by the hand you draw. Play cards to place tiles that score
       points.
     </p>
+    <p>
+      Your goal is to gain population without going broke.
+    </p>
+    <p>
+      As the city planner, you'll receive housing development applications. If
+      you have the <b>Approve Housing</b> card in your hand can pay the{' '}
+      <Badge type='residentialApplications' /> hosing application and{' '}
+      <Badge type='ap' /> action points cost, then you can place a residential
+      cell on the map.
+    </p>
+    <p>
+      People will move to residential cells if there are jobs, and some cells
+      generate jobs. Each residential cell is scored based on its proximity to
+      jobs, and better socres mean more people will move in.
+    </p>
+    <p>
+      You start with <b>City Hall</b>, which generates a few jobs, but you'll
+      need more, especially by approving <b>Commercial</b> and{' '}
+      <b>Industrial</b>{' '} developments.
+    </p>
+    <p>
+      Thankfully your citizens are entrepeneureal: <b>Residential</b> cells will
+      generate <Badge type="commercialApplications" /> <b>Commercial</b>{' '}
+      development applications. These add a few jobs, but <b>Commercial</b>{' '}
+      cells generate <Badge type="industrialApplications" />{' '}
+      <b>Industrial</b> applications, which add many jobs and, in turn, generate
+      more <Badge type="residentialApplications" /> <b>Residential</b>{' '}
+      applications. It's a virtuous cycle!
+    </p>
     <button onClick={onBegin}>Begin</button>
-  </>;
+  </div>;
 }
 
 type Size = {

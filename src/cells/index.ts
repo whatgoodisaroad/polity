@@ -4,5 +4,5 @@ export * from './Void';
 export * from './CityHall';
 export * from './FreewayCorridor';
 export * from './CommercialCorridor';
-export * from './industrial';
+export * from './Industrial';
 export * from './Park';

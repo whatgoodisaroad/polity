@@ -165,3 +165,19 @@ body {
   width: 145px;
   height: 45px;
 }
+
+.splash {
+  background-color: #fff;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.splash button {
+  margin: 0 auto;
+  padding: 20px;
+  font-size: 30px;
+  width: 200px;
+  display: block;
+  cursor: pointer;
+}
