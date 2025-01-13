@@ -2,7 +2,7 @@ import { getCell, replaceCell, State } from "../game";
 import { modifyStat } from "../stats";
 import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
 import { JobProvider } from "./JobProvider";
-import { ResidentialCell } from "./residential";
+import { ResidentialCell } from "./Residential";
 
 export class IndustrialCell extends MapCell implements JobProvider {
   monthlyMaintenance = 1_000;

@@ -44,7 +44,7 @@ function Game(): React.ReactNode {
   };
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { height: canvasHeight, width: canvasWidth } = useCanvasSize(canvasRef);
+  const { size: { height: canvasHeight, width: canvasWidth }, forceUpdate } = useCanvasSize(canvasRef);
 
   const offsetToCoord = (
     offsetX: number,
@@ -62,55 +62,58 @@ function Game(): React.ReactNode {
     return { row, column };
   };
 
-  useEffect(
-    () => {
-      const context = canvasRef.current?.getContext('2d');
-      if (!context) {
-        return;
-      }
-      const cellHeight = Math.floor(canvasHeight / zoom);
-      const cellWidth = Math.floor(canvasWidth / Math.floor(aspect * zoom));
-      const visible = getGrid(state, { rowStart, rowEnd, colStart, colEnd }).flat();
-      for (const pass of [0, 1] as PaintPass[]) {
-        for (const cell of visible) {
-          const { row, column } = cell;
-          const y = (row - rowStart) * cellHeight;
-          const x = (column - colStart) * cellWidth;
-          cell.paint({
-            context,
-            x,
-            y,
-            h: cellHeight,
-            w: cellWidth,
-            pass,
-            neighbors: getNeighbors(row, column, state),
-          });
-        }
-      }
-
-      if (hover) {
-        const { row, column } = hover;
+  const paint = () => {
+    const context = canvasRef.current?.getContext('2d');
+    if (!context) {
+      return;
+    }
+    const cellHeight = Math.floor(canvasHeight / zoom);
+    const cellWidth = Math.floor(canvasWidth / Math.floor(aspect * zoom));
+    const visible = getGrid(state, { rowStart, rowEnd, colStart, colEnd }).flat();
+    for (const pass of [0, 1] as PaintPass[]) {
+      for (const cell of visible) {
+        const { row, column } = cell;
         const y = (row - rowStart) * cellHeight;
         const x = (column - colStart) * cellWidth;
-        context.strokeStyle = '#000';
-        context.lineWidth = 1;
-        context.strokeRect(x, y, cellWidth, cellHeight);
+        cell.paint({
+          context,
+          x,
+          y,
+          h: cellHeight,
+          w: cellWidth,
+          pass,
+          neighbors: getNeighbors(row, column, state),
+        });
       }
+    }
 
-      if (hoverCell?.areaOfEffect) {
-        for (const { dr, dc } of hoverCell.areaOfEffect) {
-          const row = hoverCell.row + dr;
-          const column = hoverCell.column + dc;
-          const y = (row - rowStart) * cellHeight;
-          const x = (column - colStart) * cellWidth;
-          context.strokeStyle = '#00f'
-          context.globalAlpha = 0.2;
-          context.fillRect(x, y, cellWidth, cellHeight);
-          context.globalAlpha = 1;
-        }
+    if (hover) {
+      const { row, column } = hover;
+      const y = (row - rowStart) * cellHeight;
+      const x = (column - colStart) * cellWidth;
+      context.strokeStyle = '#000';
+      context.lineWidth = 1;
+      context.strokeRect(x, y, cellWidth, cellHeight);
+    }
+
+    if (hoverCell?.areaOfEffect) {
+      for (const { dr, dc } of hoverCell.areaOfEffect) {
+        const row = hoverCell.row + dr;
+        const column = hoverCell.column + dc;
+        const y = (row - rowStart) * cellHeight;
+        const x = (column - colStart) * cellWidth;
+        context.strokeStyle = '#00f'
+        context.globalAlpha = 0.2;
+        context.fillRect(x, y, cellWidth, cellHeight);
+        context.globalAlpha = 1;
       }
-    },
+    }
+  };
+
+  useEffect(
+    paint,
     [
+      canvasRef.current,
       state.map,
       zoom,
       centerRow,
@@ -120,8 +123,27 @@ function Game(): React.ReactNode {
       hoverCell,
       canvasWidth,
       canvasHeight,
+      state.scene,
     ]
   );
+
+  useEffect(
+    () => {
+      if (state.scene !== 'gameplay') {
+        return;
+      }
+      forceUpdate();
+    },
+    [state.scene]
+  )
+
+  if (state.scene === 'splash') {
+    return <SplashScreen 
+      onBegin={() => {
+        setState({ ...state, scene: 'gameplay' });
+      }}
+    />;
+  }
 
   return <div>
     <Row>
@@ -316,12 +338,29 @@ function Stats({
   );
 }
 
+function SplashScreen({ onBegin }: { onBegin: () => void }): React.ReactElement {
+  return <>
+    <h1>Polity: Deckbuilding City Planning</h1>
+    <p>
+      Polity is a city planning game where the actions you can take are
+      determined by the hand you draw. Play cards to place tiles that score
+      points.
+    </p>
+    <button onClick={onBegin}>Begin</button>
+  </>;
+}
+
 type Size = {
   width: number;
   height: number;
 };
 
-function useCanvasSize(ref: React.RefObject<HTMLCanvasElement | null>): Size {
+function useCanvasSize(
+  ref: React.RefObject<HTMLCanvasElement | null>
+): {
+  size: Size;
+  forceUpdate: () => void;
+} {
   const [size, setSize] = useState<Size>({ height: 1, width: 1 });
   const updateSize = () => {
     if (!ref.current) {
@@ -338,7 +377,7 @@ function useCanvasSize(ref: React.RefObject<HTMLCanvasElement | null>): Size {
     },
     []
   );
-  return size;
+  return { size, forceUpdate: updateSize };
 }
 
 

@@ -1,15 +1,29 @@
 import { getJobDistanceScore } from "./analysis/getJobDIstanceScore";
-import { ApproveHousingCard, ExpandMunicipalCharter, ParadeCard, ParksAndRecreationCard, ResidentialTaxAdjustmentCard } from "./cards";
-import { ApproveCommercialCorridorCard } from "./cards/ApproveCommercialCorridor";
-import { ApproveIndustrialCard } from "./cards/ApproveIndustrial";
+import { 
+  ApproveHousingCard,
+  ExpandMunicipalCharter,
+  ParadeCard,
+  ParksAndRecreationCard,
+  ResidentialTaxAdjustmentCard,
+  ApproveCommercialCorridorCard,
+  ApproveIndustrialCard,
+} from "./cards";
 import { BaseCard } from "./cards/base";
-import { CityHallCell, CommercialCorridorCell, EmptyCell, FreewayCorridorCell, ResidentialCell, VoidCell } from "./cells";
+import {
+  CityHallCell,
+  CommercialCorridorCell,
+  EmptyCell,
+  FreewayCorridorCell,
+  ResidentialCell,
+  VoidCell,
+  IndustrialCell,
+  ParkCell,
+} from "./cells";
 import type { CellType, MapCell } from "./cells/base";
-import { IndustrialCell } from "./cells/industrial";
-import { ParkCell } from "./cells/park";
 import { initStat, modifyStat, Stat, StatKey } from "./stats";
 
 export type State = {
+  scene: 'splash' | 'gameplay';
   map: MapCell[];
   paintTile?: CellType;
   log: string[];
@@ -40,6 +54,7 @@ export function getInitialState(): State {
     }
   }  
   return {
+    scene: 'splash',
     map,
     log: [],
     stats: new Map([

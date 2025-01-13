@@ -1,7 +1,7 @@
 import { getCell, replaceCell, State } from "../game";
 import { modifyStat } from "../stats";
 import { Color, MapCell, PaintArgs } from "./base";
-import { ResidentialCell } from "./residential";
+import { ResidentialCell } from "./Residential";
 
 export class ParkCell extends MapCell {
   monthlyMaintenance = 1_000;
