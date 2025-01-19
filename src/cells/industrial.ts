@@ -1,6 +1,6 @@
 import { getCell, replaceCell, State } from "../game";
 import { modifyStat } from "../stats";
-import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
+import { Color, drawBuilding, MapCell, PaintArgs } from "./Base";
 import { JobProvider } from "./JobProvider";
 import { ResidentialCell } from "./Residential";
 

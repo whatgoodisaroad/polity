@@ -1,6 +1,6 @@
 import { State } from "../game";
 import { modifyStat } from "../stats";
-import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
+import { Color, drawBuilding, MapCell, PaintArgs } from "./Base";
 import { JobProvider } from "./JobProvider";
 
 export class CityHallCell extends MapCell implements JobProvider {

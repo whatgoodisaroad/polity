@@ -1,6 +1,6 @@
 import { getCell, replaceCell, State } from "../game";
 import { modifyStat } from "../stats";
-import { Color, MapCell, PaintArgs } from "./base";
+import { Color, MapCell, PaintArgs } from "./Base";
 import { ResidentialCell } from "./Residential";
 
 export class ParkCell extends MapCell {

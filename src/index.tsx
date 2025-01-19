@@ -1,9 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { analyze, applyStartOfRoundEffects, draw, getCell, getGrid, getInitialState, getNeighbors, placeTile, State } from './game';
-import { MapCell, PaintPass } from './cells/base';
+import { MapCell, PaintPass } from './cells/Base';
 import { BaseCard } from './cards/base';
 import { StatKey } from './stats';
+import { isMobile } from 'react-device-detect';
 
 function Game(): React.ReactNode {
   const [state, setState] = useState(() => draw(getInitialState()));
@@ -17,7 +18,7 @@ function Game(): React.ReactNode {
     [state.map, hover?.row, hover?.column]
   );
 
-  const aspect = 1.8;
+  const aspect = isMobile ? 0.8 : 1.8;
   const rowStart = centerRow - zoom * 0.5;
   const rowEnd = centerRow + zoom * 0.5;
   const colStart = centerColumn - Math.floor(aspect * zoom * 0.5);
@@ -178,7 +179,7 @@ function Game(): React.ReactNode {
       />
     </Row>
     <Row className="tray">
-      <div className="controls">
+      <div className={`controls ${isMobile ? 'mobile' : ''}`}>
         <button className="button zoomOutButton" onClick={zoomOut}>-</button>
         <button className="button zoomInButton" onClick={zoomIn}>+</button>
         <button className="button moveUpButton" onClick={moveUp}>⬆</button>

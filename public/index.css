@@ -124,6 +124,10 @@ body {
   width: 175px;
   margin-right: 70px;
 }
+.controls.mobile {
+  top: -250px;
+}
+
 .controls .button {
   width: 45px;
   height: 45px;

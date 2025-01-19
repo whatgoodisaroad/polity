@@ -1,7 +1,7 @@
 import { getJobDistanceScore } from "../analysis/getJobDIstanceScore";
 import { replaceCell, State } from "../game";
 import { getStatValue, modifyStat } from "../stats";
-import { Color, drawBuilding, MapCell, PaintArgs } from "./base";
+import { Color, drawBuilding, MapCell, PaintArgs } from "./Base";
 
 type Dwelling = {
   propertyValue: number;

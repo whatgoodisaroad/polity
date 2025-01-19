@@ -19,7 +19,7 @@ import {
   IndustrialCell,
   ParkCell,
 } from "./cells";
-import type { CellType, MapCell } from "./cells/base";
+import type { CellType, MapCell } from "./cells/Base";
 import { initStat, modifyStat, Stat, StatKey } from "./stats";
 
 export type State = {

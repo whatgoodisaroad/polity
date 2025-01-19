@@ -1,4 +1,4 @@
-import { MapCell, PaintArgs } from "./base";
+import { MapCell, PaintArgs } from "./Base";
 
 export class VoidCell extends MapCell {  
   constructor(row: number, column: number) {

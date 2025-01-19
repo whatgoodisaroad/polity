@@ -1,4 +1,4 @@
-import { Color, drawBuilding, MapCell, neighborToCoords, PaintArgs } from "./base";
+import { Color, drawBuilding, MapCell, neighborToCoords, PaintArgs } from "./Base";
 import { Neighbors, State } from "../game";
 import { modifyStat } from "../stats";
 import { JobProvider } from "./JobProvider";

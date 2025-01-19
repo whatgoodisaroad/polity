@@ -1,4 +1,4 @@
-import { Color, MapCell, PaintArgs } from "./base";
+import { Color, MapCell, PaintArgs } from "./Base";
 
 export class EmptyCell extends MapCell {
   debris: { dh: number; dv: number }[] = [];

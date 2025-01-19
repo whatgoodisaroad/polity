@@ -1,4 +1,4 @@
-import { Color, MapCell, neighborToCoords, PaintArgs } from "./base";
+import { Color, MapCell, neighborToCoords, PaintArgs } from "./Base";
 import { Neighbors } from "../game";
 
 export class FreewayCorridorCell extends MapCell {
