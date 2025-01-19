@@ -23,6 +23,11 @@ export class ResidentialCell extends MapCell {
     this.jobDistanceScore = jobDistanceScore;
   }
 
+  static create(row: number, column: number, state: State): ResidentialCell {
+    const jobDistanceScore = getJobDistanceScore(row, column, state);
+    return new ResidentialCell(row, column, [], jobDistanceScore);
+  }
+
   addDwelling(): ResidentialCell {
     if (this.dwellings.length === HOUSE_COORDINATES.length) {
       throw 'Cell is full';
@@ -154,10 +159,10 @@ export class ResidentialCell extends MapCell {
       ...super.getDescription().entries(),
       ['Lots', `${this.getLotCount()}`],
       ['Dwellings', `${this.dwellings.length}`],
+      ['Proximity to Jobs', getProximityFromScore(this.jobDistanceScore)],
       ['Total Property Value', `\$${this.getTotalPropertyValue()}`],
       ['Monthly maintenance', `\$${this.getMaintenanceCost()}`],
       ['Job Score', `${this.jobDistanceScore}`],
-      ['Proximity to Jobs', getProximityFromScore(this.jobDistanceScore)],
     ]);
   }
 
@@ -218,7 +223,7 @@ function getProximityFromScore(score: number): JobProximity {
 }
 
 
-const HOUSE_COORDINATES = [
+const HOUSE_COORDINATES: [number, number, number, number][] = [
   [0.2, 0.04, 0.05, 0.05],
   [0.2, 0.12, 0.05, 0.05],
   [0.2, 0.2, 0.05, 0.05],

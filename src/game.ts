@@ -165,9 +165,9 @@ export function placeTile(
   if (type === 'freeway-corridoor') {
     newCell = new FreewayCorridorCell(row, column);
   } else if (type === 'commercial-corridor') {
-    newCell = new CommercialCorridorCell(row, column);
+    newCell = CommercialCorridorCell.create(row, column);
   } else if (type === 'residential') {
-    newCell = new ResidentialCell(row, column, undefined, getJobDistanceScore(row, column, state));
+    newCell = ResidentialCell.create(row, column, state);
   } else if (type === 'industrial') {
     newCell = new IndustrialCell(row, column);
   } else if (type === 'park') {
