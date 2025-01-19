@@ -6,7 +6,7 @@ export class ResidentialTaxAdjustmentCard extends BaseCard {
   constructor() {
     super('Residential Tax Adjustnment');
     this.imageUrl = 'img/ResidentialTaxAdjustment.jpeg';
-    this.cost = new Map([['ap', 3]]);
+    this.cost = new Map([['ap', 4]]);
   }
 
   effect(state: State): State {

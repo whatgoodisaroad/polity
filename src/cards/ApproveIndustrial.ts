@@ -6,7 +6,7 @@ export class ApproveIndustrialCard extends BaseCard {
     super('Approve Industrial');
     this.imageUrl = 'img/Industrial.jpeg';
     this.cost = new Map([
-      ['ap', 2],
+      ['ap', 3],
       ['industrialApplications', 1],
     ]);
   }

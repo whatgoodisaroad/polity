@@ -21,24 +21,23 @@ body {
 }
 
 .card-tip {
-  width: 70px;
+  width: 200px;
   text-align: center;
   background-color: #555;
   border-radius: 3px;
   color: #fff;
-  font-size: 10px;
+  font-size: 20px;
   display: none;
-  animation: MoveUpDown 500ms ease-in-out infinite;
+  animation: MoveUpDown 250ms ease-in-out infinite;
 }
 @keyframes MoveUpDown {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(-140px);
   }
   50% {
-    transform: translateY(-30px);
+    transform: translateY(-150px);
   }
 }
-
 
 .card {
   width: 200px;
@@ -88,15 +87,19 @@ body {
 .hand .card-container:first-of-type {
   margin-left: 0;
 }
+.hand .card {
+  transition: transform 250ms;
+}
 
 .hand .card-container:hover {
-  transform: scale(1.75) rotate(0) translateY(-70px) !important;
+  transform: translateY(-200px) !important;
   z-index: 1; 
 }
 .hand .card-container:hover .card {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  transform: scale(1.75) rotate(0) !important;
 }
-.hand .card-container:hover .card-tip {
+.hand:hover .card-container:hover .card-tip {
   display: block;
 }
 

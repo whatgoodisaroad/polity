@@ -9,7 +9,7 @@ import { getDistanceMap } from "./getDistanceMap";
  * - Find the travel distance between the origin and every job-generating cell.
  * - Produce a list of each such cell where the nunber of jobs is divided by the
  *   travel distance. This is the cell-pair-job-score.
- * - The final job-distance-score is the median cell-pair-job-score.
+ * - The final job-distance-score is the mean cell-pair-job-score.
 */
 export function getJobDistanceScore(
   row: number,
@@ -31,13 +31,5 @@ export function getJobDistanceScore(
       jobScores.push(jobsCell.getJobCount() / distance);
     }
   }
-
-  if (jobScores.length === 0) {
-    return 0;
-  }
-  if (jobScores.length === 1) {
-    return jobScores[0];
-  }
-  jobScores = jobScores.sort();
-  return jobScores[Math.ceil(jobScores.length / 2)];
+  return jobScores.reduce((acc, score) => acc + score, 0) / jobScores.length;
 }

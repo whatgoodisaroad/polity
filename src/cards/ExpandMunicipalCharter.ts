@@ -6,7 +6,7 @@ export class ExpandMunicipalCharter extends BaseCard {
   constructor() {
     super('Expand Municipal Charter');
     this.imageUrl = 'img/MunicipalBondIssuance.jpeg';
-    this.cost = new Map([['ap', 5]]);
+    this.cost = new Map([['ap', 3]]);
   }
 
   effect(state: State): State {

@@ -6,7 +6,7 @@ export class ApproveHousingCard extends BaseCard {
     super('Approve Housing');
     this.imageUrl = 'img/HousingDevelopmentInitiative.png';
     this.cost = new Map([
-      ['ap', 2],
+      ['ap', 1],
       ['residentialApplications', 1],
     ]);
   }
