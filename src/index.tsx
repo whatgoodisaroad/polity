@@ -196,7 +196,7 @@ function Game(): React.ReactNode {
       </div>
       {!state.paintTile && (
         <Hand
-          hand={state.hand}
+          state={state}
           onCardClick={playCard}
         />
       )}
@@ -221,10 +221,10 @@ function Row({
 }
 
 function Hand({
-  hand,
+  state,
   onCardClick
 }: {
-  hand: BaseCard[];
+  state: State;
   onCardClick: (card: BaseCard) => void;
 }): React.ReactNode {
   const handRef = useRef<HTMLDivElement>(null);
@@ -245,15 +245,16 @@ function Hand({
         `transform: rotate(${-angle}deg) translateY(${offset}px);`
       );
     });
-  }, [hand.map(({ id }) => id).join('-')]);
+  }, [state.hand.map(({ id }) => id).join('-')]);
 
   return (
     <div className="hand" ref={handRef}>
-      {hand.map((card) => (
+      {state.hand.map((card) => (
         <Card
           key={card.id}
           card={card}
           onClick={onCardClick}
+          canPlay={card.canPlay(state)}
         />
       ))}
     </div>
@@ -263,27 +264,32 @@ function Hand({
 function Card({
   card,
   onClick,
+  canPlay,
 }: {
   card: BaseCard;
   onClick: (card: BaseCard) => void;
+  canPlay: boolean
 }): React.ReactNode {
-  return <div
-    className={`card description-size-${card.descriptionSize}`}
-    onClick={() => onClick(card)}
-  >
-    <div className="card-title" title={card.name}>
-      {card.name}{' '}
+  return <div className="card-container">
+    {!canPlay && <div className="card-tip">Can't afford</div>}
+    <div
+      className={`card description-size-${card.descriptionSize}`}
+      onClick={() => onClick(card)}
+    >
+      <div className="card-title" title={card.name}>
+        {card.name}{' '}
+      </div>
+      <div className="card-cost">
+        {[...card.cost.entries()].map(([key, cost]) => <Badge value={cost} type={key} />)}
+      </div>
+      {card.imageUrl && (
+        <div
+          className="card-image"
+          style={{backgroundImage: `url(${card.imageUrl})` }}
+        />
+      )}
+      <div className="card-description">{card.getDescription()}</div>
     </div>
-    <div className="card-cost">
-      {[...card.cost.entries()].map(([key, cost]) => <Badge value={cost} type={key} />)}
-    </div>
-    {card.imageUrl && (
-      <div
-        className="card-image"
-        style={{backgroundImage: `url(${card.imageUrl})` }}
-      />
-    )}
-    <div className="card-description">{card.getDescription()}</div>
   </div>;
 }
 

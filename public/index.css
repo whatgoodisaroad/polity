@@ -19,6 +19,27 @@ body {
   display: flex;
   flex-direction: row;
 }
+
+.card-tip {
+  width: 70px;
+  text-align: center;
+  background-color: #555;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 10px;
+  display: none;
+  animation: MoveUpDown 500ms ease-in-out infinite;
+}
+@keyframes MoveUpDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
+}
+
+
 .card {
   width: 200px;
   height: 300px;
@@ -59,18 +80,24 @@ body {
   justify-content: center;
 }
 
-.hand .card {
+.hand .card-container {
   cursor: pointer;
   margin-left: -20px;
   transition: transform 250ms;
 }
-.hand .card:first-of-type {
+.hand .card-container:first-of-type {
   margin-left: 0;
 }
-.hand .card:hover {
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
+.hand .card-container:hover {
   transform: scale(1.75) rotate(0) translateY(-70px) !important;
   z-index: 1; 
+}
+.hand .card-container:hover .card {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+.hand .card-container:hover .card-tip {
+  display: block;
 }
 
 .stats {
